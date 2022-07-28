@@ -9,8 +9,14 @@
 
 사실상 firestore + firebase storage 개선판에 가까울듯.
 
+## 타게팅
+가상의 **애니메이션 OTT 회사에서 자사의 컨텐츠를 관리하는데 쓰는 툴**이라 생각하며 개발하고 있다.
+
 ## 스택
 언어: TypeScript
+
 프레임워크: Vue 3 Composition API
+
 상태관리 라이브러리: Pinia
+
 라우터: VueRouter

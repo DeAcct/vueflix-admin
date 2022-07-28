@@ -1,9 +1,57 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { ref, Ref, computed, watch } from "vue";
+import VueflixNav from "@/components/VueflixNav.vue";
+import VueflixAppBar from "@/components/VueflixAppBar.vue";
+import { useRoute } from "vue-router";
+
+const navOpen: Ref<boolean> = ref(false);
+const transformLeft = computed<string | number>(() =>
+  navOpen.value ? "100vw" : 0
+);
+
+const route = useRoute();
+watch(
+  () => route.meta.title,
+  () => {
+    document.title = route.meta.title;
+  }
+);
+</script>
 
 <template>
-  <router-view v-slot="{ Component }">
-    <component :is="Component" :key="$route.path"></component>
-  </router-view>
+  <VueflixNav :is-open="navOpen" />
+  <VueflixAppBar>
+    <template #activity-name>
+      {{ $route.name }}
+    </template>
+  </VueflixAppBar>
+  <RouterView v-slot="{ Component }">
+    <Transition name="slide">
+      <Component :is="Component" :key="$route.path"></Component>
+    </Transition>
+  </RouterView>
 </template>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.VueflixNav {
+  position: fixed;
+  left: 0;
+  top: 0;
+}
+.slide {
+  &-enter-active,
+  &-leave-active {
+    transition: opacity 150ms, transform 150ms;
+  }
+  &-enter-from,
+  &-leave-to {
+    opacity: 0;
+    transform: translateY(-30%);
+  }
+}
+
+.VueflixNav {
+  left: -100vw;
+  transform: translateX(v-bind(transformLeft));
+}
+</style>

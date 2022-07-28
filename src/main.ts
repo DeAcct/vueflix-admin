@@ -2,6 +2,7 @@ import { createApp } from "vue";
 import { createPinia } from "pinia";
 import { router } from "./router";
 import { initializeApp } from "firebase/app";
+import "./common.scss";
 import App from "./App.vue";
 
 const firebaseConfig = {
