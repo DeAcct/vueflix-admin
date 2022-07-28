@@ -24,9 +24,3 @@
   </svg>
   <span class="blind">뷰플릭스</span>
 </template>
-
-<script>
-export default {
-  name: "VueflixLogo",
-};
-</script>
