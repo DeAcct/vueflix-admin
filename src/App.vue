@@ -22,12 +22,12 @@ watch(
   <VueflixNav :is-open="navOpen" />
   <VueflixAppBar>
     <template #activity-name>
-      {{ $route.name }}
+      {{ route.name }}
     </template>
   </VueflixAppBar>
   <RouterView v-slot="{ Component }">
     <Transition name="slide">
-      <Component :is="Component" :key="$route.path"></Component>
+      <Component :is="Component" :key="route.name"></Component>
     </Transition>
   </RouterView>
 </template>
