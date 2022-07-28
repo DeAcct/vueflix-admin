@@ -13,7 +13,9 @@ const route = useRoute();
 watch(
   () => route.meta.title,
   () => {
-    document.title = route.meta.title;
+    if (typeof route.meta.title === "string") {
+      document.title = route.meta.title;
+    }
   }
 );
 </script>
@@ -27,7 +29,7 @@ watch(
   </VueflixAppBar>
   <RouterView v-slot="{ Component }">
     <Transition name="slide">
-      <Component :is="Component" :key="route.name"></Component>
+      <component :is="Component" :key="route.name"></component>
     </Transition>
   </RouterView>
 </template>
