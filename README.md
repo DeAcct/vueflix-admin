@@ -1,4 +1,5 @@
 # vueflix-admin: 뷰플릭스 어드민
+[![Netlify Status](https://api.netlify.com/api/v1/badges/269da07c-3787-47d8-b0e9-94db03632cdf/deploy-status)](https://app.netlify.com/sites/cerulean-kangaroo-e639f8/deploys)
 
 ## 제작동기
 그동안 파이어베이스에 직접 애니메이션 데이터를 입력하는 작업을 하며 불편함을 느꼈다.
