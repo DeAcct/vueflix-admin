@@ -29,76 +29,15 @@
   --bg-200: hsl(0, 5%, 95%);
   --bg-100: #fff;
 
-  --chart-palette-1: var(--theme-600);
-  --chart-palette-2: var(--theme-500);
-  --chart-palette-3: var(--theme-400);
-  --chart-palette-4: var(--theme-300);
-  --chart-palette-5: var(--theme-200);
-  --chart-palette-6: var(--theme-100);
-}
+  --header-bg: hsla(0, 0%, 100%, 80%);
+  --header-z-index: 100;
 
-#app {
-  --point-700: hsl(36, 100%, 45%);
-  --point-500: hsl(36, 100%, 50%);
+  --nav-z-index: 110;
 
-  --toggle-true: hsl(209, 100%, 50%);
-  --toggle-mixed: var(--theme-500);
-
-  --anime-bg: var(--bg-200);
-
-  --anime-item-head-700: hsl(288, 79%, 7%);
-  --anime-item-head-500: hsl(288, 79%, 10%);
-  --anime-item-head-300: hsl(288, 79%, 13%);
-  --overflow-btn-pc: hsla(0, 5%, 95%, 0.7);
-
-  --anime-item-head-opacity-700: hsla(288, 79%, 7%, 100%);
-  --anime-item-head-opacity-500: hsla(288, 79%, 7%, 80%);
-  --anime-poster-load-700: var(--anime-item-head-500);
-  --anime-poster-load-500: var(--anime-item-head-300);
-
-  --anime-wanna-see: var(--text-800);
-  --anime-wanna-see-enabled: hsl(335, 100%, 50%);
-
-  --top-item: #fff;
-  --episodes: #fff;
-  --episodes-part-info: rgba(255, 255, 255, 0.8);
-  --anime-genre: rgba(255, 255, 255, 0.8);
-
-  --new-review: var(--bg-200);
-  --chart-legend: var(--bg-200);
-  --anime-useful-widget: hsl(0, 5%, 85%);
-  --box-shadow: rgba(0, 0, 0, 0.15);
-  --modal-shadow: var(--box-shadow);
-  --overflow-gradient: linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0.95) 1%,
-    transparent,
-    rgba(255, 255, 255, 0.95) 99%
-  );
-  --player-gradient: linear-gradient(
-    rgba(0, 0, 0, 0.3),
-    transparent,
-    rgba(0, 0, 0, 0.5)
-  );
-  --thumbnail-current-bg: hsla(210, 20%, 20%, 0.8);
-  --player-aside-bg: hsl(210, 29%, 10%);
-  --toggle-box-false: hsl(210, 20%, 20%);
-  --mini-episode-current-part: hsl(210, 20%, 20%);
-  --mini-episode-scroll-bar: hsl(210, 20%, 70%);
-  --toggle-false: hsl(210, 20%, 30%);
-  --promotion-bg: hsl(210, 29%, 10%);
-  --bottom-tab: var(--text-800);
-
-  --toggle-shadow: rgba(0, 0, 0, 0.4);
   --box-shadow: 0 0.2rem 0.4rem var(--bg-300);
-  --google-login-text: hsl(210, 20%, 20%);
-
-  --gender-male: hsl(214, 91%, 55%);
-  --gender-female: hsl(342, 91%, 55%);
 }
 
-#app[data-theme="dark"],
-[data-theme="dark"] + * {
+#app[data-theme="dark"] {
   --text-900: hsl(210, 20%, 95%);
   --text-800: hsl(210, 20%, 90%);
   --text-700: hsl(210, 20%, 70%);
@@ -118,24 +57,6 @@
   --bg-300: hsl(0, 5%, 13%);
   --bg-200: hsl(0, 5%, 10%);
   --bg-100: #000;
-  --anime-item-head-700: hsl(288, 79%, 3%);
-  --anime-item-head-500: hsl(288, 79%, 5%);
-  --anime-item-head-300: hsl(288, 79%, 7%);
-  --overflow-btn-pc: hsla(0, 5%, 10%, 0.7);
-
-  --top-item: hsl(0, 5%, 7%);
-  --episodes: var(--bg-300);
-  --episodes-part-info: hsla(0, 5%, 13%, 0.5);
-  --anime-useful-widget: hsl(0, 5%, 20%);
-  --anime-genre: hsla(0, 5%, 13%, 0.8);
 
   --box-shadow: none;
-  --overflow-gradient: linear-gradient(
-    90deg,
-    var(--top-item),
-    transparent,
-    var(--top-item)
-  );
-  --new-review: var(--bg-100);
-  --chart-legend: var(--bg-100);
 }

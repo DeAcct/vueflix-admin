@@ -3,6 +3,7 @@ import { ref, Ref, computed, watch } from "vue";
 import VueflixNav from "@/components/VueflixNav.vue";
 import VueflixAppBar from "@/components/VueflixAppBar.vue";
 import { useRoute } from "vue-router";
+import { useEventListener } from "./composables/event";
 
 const navOpen: Ref<boolean> = ref(false);
 const transformLeft = computed<string | number>(() =>
@@ -18,11 +19,16 @@ watch(
     }
   }
 );
+
+const isScroll: Ref<boolean> = ref(false);
+useEventListener(window, "scroll", () => {
+  isScroll.value = 0 < Math.round(window.scrollY);
+});
 </script>
 
 <template>
   <VueflixNav :is-open="navOpen" />
-  <VueflixAppBar>
+  <VueflixAppBar :expanded="!isScroll">
     <template #activity-name>
       {{ route.name }}
     </template>
@@ -37,8 +43,9 @@ watch(
 <style lang="scss" scoped>
 .VueflixNav {
   position: fixed;
-  left: 0;
+  left: -100vw;
   top: 0;
+  transform: translateX(v-bind(transformLeft));
 }
 .slide {
   &-enter-active,
@@ -50,10 +57,5 @@ watch(
     opacity: 0;
     transform: translateY(-30%);
   }
-}
-
-.VueflixNav {
-  left: -100vw;
-  transform: translateX(v-bind(transformLeft));
 }
 </style>

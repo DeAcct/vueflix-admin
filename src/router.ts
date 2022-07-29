@@ -4,7 +4,7 @@ const routes = [
   {
     path: "/",
     name: "대시보드",
-    component: () => import("@/views/Home.vue"),
+    component: () => import("@/views/Dashboard.vue"),
     meta: {
       title: "뷰플릭스 어드민 - 대시보드",
       appBar: true,
