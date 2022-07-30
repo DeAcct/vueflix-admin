@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import { useClassNames } from "../composables/classNames";
+import { useBEMClassNames } from "../composables/classNames";
 import SearchBar from "./SearchBar.vue";
 
 const appBarProps = defineProps<{
   expanded: boolean;
 }>();
 
-const appBarClasses = useClassNames(
+const appBarClasses = useBEMClassNames(
   "VueflixAppBar",
   "expanded",
   appBarProps.expanded

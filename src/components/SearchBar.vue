@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { Ref, ref, computed } from "vue";
-import { useClassNames } from "../composables/classNames";
+import { useBEMClassNames } from "../composables/classNames";
 import IconBase from "./IconBase.vue";
 import IconSearch from "./icons/IconSearch.vue";
 
@@ -9,10 +9,19 @@ function setSearchKeyword(e: Event) {
   searchKeyword.value = (e.target as HTMLInputElement).value;
 }
 
+const inputFocused: Ref<boolean> = ref(false);
+function onFocusIn() {
+  inputFocused.value = true;
+}
+function onFocusOut() {
+  inputFocused.value = false;
+}
+const searchbarClasses = useBEMClassNames("SearchBar", "Focused", inputFocused);
+
 const placeholderVisible = computed<boolean>(
   () => searchKeyword.value.length === 0
 );
-const placeholderClasses = useClassNames(
+const placeholderClasses = useBEMClassNames(
   "SearchBar__Placeholder",
   "Visible",
   placeholderVisible
@@ -20,7 +29,7 @@ const placeholderClasses = useClassNames(
 </script>
 
 <template>
-  <label class="SearchBar inner">
+  <label :class="[...searchbarClasses, 'inner']">
     <i class="SearchBar__Icon">
       <IconBase icon-name="검색 아이콘">
         <IconSearch />
@@ -29,6 +38,8 @@ const placeholderClasses = useClassNames(
     <input
       class="SearchBar__Input"
       @input="setSearchKeyword"
+      @focusin="onFocusIn"
+      @focusout="onFocusOut"
       :value="searchKeyword"
     />
     <span :class="placeholderClasses">
@@ -46,10 +57,12 @@ const placeholderClasses = useClassNames(
   background-color: var(--bg-100);
   box-shadow: var(--box-shadow);
   border-radius: 9999px;
+  border: 1px solid transparent;
   padding: {
     top: 1rem;
     bottom: 1rem;
   }
+  cursor: text;
 
   &__Icon {
     width: 2.4rem;
@@ -59,6 +72,7 @@ const placeholderClasses = useClassNames(
   }
 
   &__Input {
+    flex: 1;
     font-weight: 500;
   }
 
@@ -67,11 +81,16 @@ const placeholderClasses = useClassNames(
     left: calc(var(--inner-padding) + 3.4rem);
     font-size: 1.3rem;
     color: var(--bg-500);
-    display: none;
+    visibility: hidden;
 
     &--Visible {
-      display: block;
+      visibility: visible;
     }
+  }
+
+  transition: border-color 150ms ease-out;
+  &--Focused {
+    border-color: var(--theme-300);
   }
 }
 </style>
