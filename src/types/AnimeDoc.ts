@@ -35,11 +35,6 @@ interface ReviewItem {
   uid: string;
 }
 
-interface SlideMeta {
-  copy: string;
-  shortName: string;
-}
-
 export interface AnimeDoc {
   copy: string;
   director: string;
@@ -47,7 +42,7 @@ export interface AnimeDoc {
   idNumber: number;
   isEnd: boolean;
   keywordReview: {
-    [key: string]: KeywordReviewItem;
+    [key: string]: KeywordReviewItem; // 향후 키워드리뷰 항목이 늘어날 것을 고려
   };
   madeBy: Array<string>;
   name: string;
@@ -57,7 +52,9 @@ export interface AnimeDoc {
   rating: string;
   release: Array<string>;
   reviews: Array<ReviewItem>;
-  slideMeta: SlideMeta;
+  shortName: string;
+  slideCopy: string;
   summary: string;
+  tag: Array<string>;
   type: string;
 }

@@ -1,12 +1,10 @@
-import { computed, ComputedRef, Ref, reactive } from "vue";
+import { computed, reactive } from "vue";
+import type {
+  BEMConditionObject,
+  BlockElement,
+  VueBoolean,
+} from "../types/ClassName";
 
-type VueBoolean = boolean | ComputedRef<boolean> | Ref<boolean>;
-
-type BlockElement = `${string}__${string}`;
-type BlockElementModifier = `${string}__${string}--${string}`;
-interface BEMConditionObject {
-  [key: string | BlockElementModifier]: VueBoolean;
-}
 export function useBEMClassNames(
   blockOrElement: string | BlockElement,
   modifier: string,
