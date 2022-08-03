@@ -3,15 +3,15 @@ import { Ref, ref } from "vue";
 import { useBEMClassNames } from "../composables/classNames.js";
 import { useStorageMedia } from "../composables/firebase.js";
 import type { ImageFileName } from "../types/MediaExtension";
-
-type ListElementRoot = "div" | "li";
+import type { CardElementRoot } from "../types/ElementRoot";
+import HorizontalList from "./HorizontalList.vue";
 
 const animeListCardProps = defineProps<{
   animeName: string;
   poster: ImageFileName;
   tags?: Array<string>;
   madeBy: Array<string>;
-  rootType: ListElementRoot;
+  rootType: CardElementRoot;
 }>();
 
 const { imgURL } = useStorageMedia(
@@ -44,13 +44,12 @@ const thumbnailClasses = useBEMClassNames(
           </template>
         </p>
       </div>
-      <div class="row-bottom" v-if="tags">
-        <ul class="tags">
-          <li v-for="tag in tags" class="tag">
-            {{ tag }}
-          </li>
-        </ul>
-      </div>
+      <HorizontalList
+        :data="tags"
+        v-if="tags"
+        root-type="ul"
+        class="row-bottom"
+      />
     </div>
   </component>
 </template>
@@ -59,8 +58,8 @@ const thumbnailClasses = useBEMClassNames(
 .AnimeListCard {
   display: flex;
   align-items: center;
-  height: calc(6rem / 3 * 4 + 2rem);
-  padding: 1rem 0;
+  height: calc(6rem / 3 * 4 + (var(--card-padding) * 2));
+  padding: var(--card-padding);
   &__Thumbnail {
     width: 6rem;
     height: 100%;
@@ -94,23 +93,6 @@ const thumbnailClasses = useBEMClassNames(
     }
     .company {
       font-size: 1.2rem;
-    }
-    .tags {
-      width: 100%;
-      overflow-y: scroll;
-      display: flex;
-      border-radius: 9999px;
-      .tag {
-        min-width: fit-content;
-        padding: 0.5rem 0.75rem;
-        font-size: 1.2rem;
-        background-color: var(--bg-300);
-        border-radius: 9999px;
-        font-weight: 500;
-        &:not(:last-child) {
-          margin-right: 0.3rem;
-        }
-      }
     }
   }
 }

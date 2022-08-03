@@ -60,8 +60,19 @@ export function useFirestoreSingleDoc<T>(
   const docRef = doc(db, collectionName, docName);
   const error: Ref<string> = ref("");
 
-  watchEffect(async () => {
-    _doc.value = (await getDoc(docRef)).data() as T;
+  watchEffect(async (cleanUp) => {
+    const unsub = onSnapshot(
+      docRef,
+      (doc) => {
+        _doc.value = doc.data() as T;
+      },
+      () => {
+        error.value = "firestore에서 데이터를 불러오는데 문제가 발생했습니다.";
+      }
+    );
+    cleanUp(() => {
+      unsub();
+    });
   });
   return { _doc, error };
 }

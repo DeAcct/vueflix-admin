@@ -41,6 +41,7 @@ const placeholderClasses = useBEMClassNames(
       @focusin="onFocusIn"
       @focusout="onFocusOut"
       :value="searchKeyword"
+      autofocus
     />
     <span :class="placeholderClasses">
       검색할 애니메이션, 추천목록 등을 입력하세요

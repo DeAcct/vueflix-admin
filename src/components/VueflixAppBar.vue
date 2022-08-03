@@ -8,17 +8,27 @@ const appBarProps = defineProps<{
 
 const appBarClasses = useBEMClassNames(
   "VueflixAppBar",
-  "expanded",
+  "Expanded",
   appBarProps.expanded
 );
 </script>
 
 <template>
   <header :class="[...appBarClasses, 'inner']">
-    <strong class="VueflixAppBar__ActivityName">
-      <slot name="activity-name" />
-    </strong>
-    <SearchBar></SearchBar>
+    <div class="row-top">
+      <div class="col-left">
+        <button class="VueflixAppBar__HamburgerBtn">
+          <span class="blind">사이드 메뉴 열기</span>
+          <span class="line"></span>
+          <span class="line"></span>
+          <span class="line"></span>
+        </button>
+        <strong class="VueflixAppBar__ActivityName">
+          <slot name="activity-name" />
+        </strong>
+      </div>
+    </div>
+    <SearchBar v-if="expanded"></SearchBar>
   </header>
 </template>
 
@@ -36,9 +46,33 @@ const appBarClasses = useBEMClassNames(
     font-size: 2rem;
   }
 
-  &--expanded {
+  &__HamburgerBtn {
+    width: 3.6rem;
+    height: 3.6rem;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    margin-right: 0.5rem;
+    .line {
+      width: 1.8rem;
+      height: 0.2rem;
+      background-color: var(--bg-900);
+    }
+  }
+
+  .row-top {
+    display: flex;
+    align-items: center;
+    .col-left {
+      display: flex;
+      align-items: center;
+    }
+  }
+  &--Expanded {
     backdrop-filter: unset;
-    height: 12rem;
+    height: 14rem;
 
     padding: {
       top: 2rem;
