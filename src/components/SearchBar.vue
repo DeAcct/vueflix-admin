@@ -25,7 +25,7 @@ const placeholderVisible = computed<boolean>(
 );
 const placeholderClasses = computed(() => [
   "SearchBar__Placeholder",
-  { "SearchBar__Placeholder--Visible": placeholderVisible },
+  { "SearchBar__Placeholder--Visible": placeholderVisible.value },
 ]);
 </script>
 
