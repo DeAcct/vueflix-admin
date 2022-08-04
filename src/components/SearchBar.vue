@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { Ref, ref, computed } from "vue";
-import { useBEMClassNames } from "../composables/classNames";
 import IconBase from "./IconBase.vue";
 import IconSearch from "./icons/IconSearch.vue";
 
@@ -16,16 +15,18 @@ function onFocusIn() {
 function onFocusOut() {
   inputFocused.value = false;
 }
-const searchbarClasses = useBEMClassNames("SearchBar", "Focused", inputFocused);
+const searchbarClasses = computed(() => [
+  "SearchBar",
+  { "SearchBar--Focused": inputFocused.value },
+]);
 
 const placeholderVisible = computed<boolean>(
   () => searchKeyword.value.length === 0
 );
-const placeholderClasses = useBEMClassNames(
+const placeholderClasses = computed(() => [
   "SearchBar__Placeholder",
-  "Visible",
-  placeholderVisible
-);
+  { "SearchBar__Placeholder--Visible": placeholderVisible },
+]);
 </script>
 
 <template>

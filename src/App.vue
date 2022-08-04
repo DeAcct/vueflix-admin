@@ -1,14 +1,8 @@
 <script setup lang="ts">
 import { ref, Ref, computed, watch } from "vue";
-import VueflixNav from "@/components/VueflixNav.vue";
 import VueflixAppBar from "@/components/VueflixAppBar.vue";
 import { useRoute } from "vue-router";
 import { useEventListener } from "./composables/event";
-
-const navOpen: Ref<boolean> = ref(false);
-const transformLeft = computed<string | number>(() =>
-  navOpen.value ? "100vw" : 0
-);
 
 const route = useRoute();
 watch(
@@ -24,38 +18,43 @@ const isScroll: Ref<boolean> = ref(false);
 useEventListener(window, "scroll", () => {
   isScroll.value = 0 < Math.round(window.scrollY);
 });
+const routerViewClasses = computed(() => [
+  "RouterView",
+  { "RouterView--HeaderExpanded": !isScroll.value },
+]);
 </script>
 
 <template>
-  <VueflixNav :is-open="navOpen" />
   <VueflixAppBar :expanded="!isScroll">
     <template #activity-name>
       {{ route.name }}
     </template>
   </VueflixAppBar>
-  <RouterView v-slot="{ Component }">
-    <Transition name="slide">
+  <RouterView v-slot="{ Component }" :class="routerViewClasses">
+    <Transition name="fade">
       <component :is="Component" :key="route.name"></component>
     </Transition>
   </RouterView>
 </template>
 
 <style lang="scss" scoped>
-.VueflixNav {
+.VueflixAppBar {
   position: fixed;
-  left: -100vw;
-  top: 0;
-  transform: translateX(v-bind(transformLeft));
+  z-index: 90;
 }
-.slide {
+.fade {
   &-enter-active,
   &-leave-active {
-    transition: opacity 150ms, transform 150ms;
+    transition: opacity 150ms;
   }
   &-enter-from,
   &-leave-to {
     opacity: 0;
-    transform: translateY(-30%);
   }
+}
+.RouterView {
+  padding-top: 14rem;
+  //스크롤 뒤 헤더 스타일 변경 테스트용
+  margin-bottom: 100vh;
 }
 </style>

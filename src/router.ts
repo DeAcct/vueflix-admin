@@ -7,8 +7,22 @@ const routes = [
     component: () => import("@/views/Dashboard.vue"),
     meta: {
       title: "뷰플릭스 어드민 - 대시보드",
-      appBar: true,
-      bottomTabMenu: true,
+    },
+  },
+  {
+    path: "/anime",
+    name: "애니메이션",
+    component: () => import("@/views/Anime.vue"),
+    meta: {
+      title: "뷰플릭스 어드민 - 애니메이션",
+    },
+  },
+  {
+    path: "/recommend-list",
+    name: "추천 목록",
+    component: () => import("@/views/RecommendList.vue"),
+    meta: {
+      title: "뷰플릭스 어드민 - 추천 목록",
     },
   },
 ];

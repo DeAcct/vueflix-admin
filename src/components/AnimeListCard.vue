@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-import { Ref, ref } from "vue";
-import { useBEMClassNames } from "../composables/classNames.js";
+import { computed, Ref, ref } from "vue";
 import { useStorageMedia } from "../composables/firebase.js";
 import type { ImageFileName } from "../types/MediaExtension";
 import type { CardElementRoot } from "../types/ElementRoot";
@@ -21,11 +20,11 @@ const imgLoaded: Ref<boolean> = ref(false);
 function onImgLoad() {
   imgLoaded.value = true;
 }
-const thumbnailClasses = useBEMClassNames(
+const thumbnailClasses = computed(() => [
+  "loading-target",
   "AnimeListCard__Thumbnail",
-  "Loaded",
-  imgLoaded
-);
+  { "AnimeListCard__Thumbnail--Loaded": imgLoaded.value },
+]);
 </script>
 
 <template>
