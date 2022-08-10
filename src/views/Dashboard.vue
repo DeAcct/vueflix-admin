@@ -74,8 +74,11 @@ const numbersofAnime = computed<number | string>(() => {
         <p class="Description">가장 최근 등록된 3개의 추천 목록입니다.</p>
       </template>
       <template #content>
-        <ul class="Contents--Recommend">
-          <RecommendListCard root-type="li" />
+        <ul class="Contents Contents--Recommend">
+          <RecommendListCard
+            root-type="li"
+            recommend-title="너를 위해서라면 몇 번이라도! 타임루프물"
+          />
         </ul>
         <RouterLink to="#" class="ViewMoreBtn">
           더보기

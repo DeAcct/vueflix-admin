@@ -22,6 +22,7 @@ const routerViewClasses = computed(() => [
   "RouterView",
   { "RouterView--HeaderExpanded": !isScroll.value },
 ]);
+console.clear();
 </script>
 
 <template>

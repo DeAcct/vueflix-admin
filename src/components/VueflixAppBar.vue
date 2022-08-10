@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import SearchBar from "./SearchBar.vue";
-import VueflixNav from "@/components/VueflixNav.vue";
+import VueflixNav from "./VueflixNav.vue";
 import { computed, ref, Ref } from "vue";
 import HamburgerButton from "./HamburgerButton.vue";
 

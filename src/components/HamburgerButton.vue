@@ -38,6 +38,7 @@ const hamburgerButtonClasses = computed(() => [
   }
   &--Opened {
     justify-content: center;
+    top: 2rem;
     .line {
       position: absolute;
       &--left {
