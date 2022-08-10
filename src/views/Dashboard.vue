@@ -8,17 +8,18 @@ import VueflixSection from "@/components/VueflixSection.vue";
 import AnimeListCard from "@/components/AnimeListCard.vue";
 import IconBase from "@/components/IconBase.vue";
 import IconArrowNext from "@/components/icons/IconArrowNext.vue";
+import RecommendListCard from "@/components/RecommendListCard.vue";
 import type { AnimeDoc } from "../types/AnimeDoc";
 import type { Statistic } from "../types/Statistics";
+import type { RecommendListDoc } from "../types/RecommendListDoc";
 import { computed } from "vue";
-import RecommendListCard from "../components/RecommendListCard.vue";
 
 const { docs: animes } = useFirestoreDocs<AnimeDoc>(
   "anime",
   orderBy("idNumber"),
   limit(3)
 );
-const { _doc: statistics } = useFirestoreSingleDoc<Statistic>(
+const { singleDoc: statistics } = useFirestoreSingleDoc<Statistic>(
   "statistics",
   "statistics"
 );
@@ -32,6 +33,12 @@ const numbersofAnime = computed<number | string>(() => {
     return 0;
   }
 });
+
+const { docs: recommendLists } = useFirestoreDocs<RecommendListDoc>(
+  "recommend",
+  orderBy("idNumber"),
+  limit(3)
+);
 </script>
 
 <template>
@@ -76,8 +83,9 @@ const numbersofAnime = computed<number | string>(() => {
       <template #content>
         <ul class="Contents Contents--Recommend">
           <RecommendListCard
+            v-for="recommendList in recommendLists"
             root-type="li"
-            recommend-title="너를 위해서라면 몇 번이라도! 타임루프물"
+            :recommend-list="recommendList"
           />
         </ul>
         <RouterLink to="#" class="ViewMoreBtn">
@@ -95,6 +103,9 @@ const numbersofAnime = computed<number | string>(() => {
 
 <style lang="scss" scoped>
 .Dashboard {
+  .VueflixSection {
+    margin-bottom: 2.5rem;
+  }
   .Counter {
     font-size: 1.5rem;
   }

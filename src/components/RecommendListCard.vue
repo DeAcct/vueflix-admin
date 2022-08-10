@@ -1,29 +1,40 @@
 <script lang="ts" setup>
 import type { CardElementRoot } from "../types/ElementRoot";
+import { RecommendListDoc } from "../types/RecommendListDoc";
+import HorizontalList from "./HorizontalList.vue";
+import AnimePoster from "./AnimePoster.vue";
+import { computed } from "vue";
+
 const animeListCardProps = defineProps<{
   rootType: CardElementRoot;
-  recommendTitle: string;
+  recommendList: RecommendListDoc;
 }>();
+
+const listLength = computed<number>(
+  () => animeListCardProps.recommendList.list.length
+);
 </script>
 
 <template>
-  <component :is="rootType" class="RecommendListCard inner">
-    <ul class="RecommendListCard__Thumbnails">
-      <li class="Thumbnail loading-target">
-        <img src="" alt="" />
-      </li>
-      <li class="Thumbnail loading-target">
-        <img src="" alt="" />
-      </li>
-      <li class="Thumbnail loading-target">
-        <img src="" alt="" />
-      </li>
-      <li class="Thumbnail loading-target">
-        <img src="" alt="" />
-      </li>
-    </ul>
+  <component :is="rootType" class="RecommendListCard">
+    <HorizontalList root-type="ul" scroll="none">
+      <template #content>
+        <AnimePoster
+          v-for="recommendPoster in recommendList.list"
+          root-type="li"
+          :src="`${recommendPoster.aniTitle}/${recommendPoster.episodeThumbnail}`"
+          :alt="`${recommendPoster.aniTitle} 포스터`"
+        />
+        <AnimePoster
+          v-for="recommendPoster in recommendList.list"
+          root-type="li"
+          :src="`${recommendPoster.aniTitle}/${recommendPoster.episodeThumbnail}`"
+          :alt="`${recommendPoster.aniTitle} 포스터`"
+        />
+      </template>
+    </HorizontalList>
     <strong class="RecommendListCard__Title">
-      {{ recommendTitle }}
+      {{ recommendList.subject }}
     </strong>
   </component>
 </template>
@@ -32,25 +43,29 @@ const animeListCardProps = defineProps<{
 .RecommendListCard {
   width: 100%;
   border-bottom: 1px solid var(--bg-200);
-  padding: {
-    top: var(--inner-padding);
-    bottom: var(--inner-padding);
-  }
-  &__Thumbnails {
-    width: 100%;
-    display: flex;
-    margin-bottom: 1rem;
-    .Thumbnail {
-      width: 6rem;
-      height: calc(6rem / 3 * 4);
-      border-radius: var(--radius-1);
+  padding: var(--card-padding);
+  .HorizontalList {
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+    border-radius: 9999px;
+    .AnimePoster {
+      width: 8rem;
+      flex: 0 0 auto;
+      border-radius: 9999px;
       &:not(:last-child) {
         margin-right: 1rem;
       }
+      animation: marquee calc(v-bind(listLength) * 1s) linear infinite;
     }
   }
   &__Title {
     font-size: 1.4rem;
+  }
+}
+
+@keyframes marquee {
+  100% {
+    transform: translateX(calc((v-bind(listLength) + 1) * -6rem));
   }
 }
 </style>

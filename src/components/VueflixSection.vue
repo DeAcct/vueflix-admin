@@ -41,9 +41,5 @@
     background-color: var(--bg-100);
     box-shadow: var(--box-shadow);
   }
-
-  &:not(:last-child) {
-    margin-bottom: 2.5rem;
-  }
 }
 </style>

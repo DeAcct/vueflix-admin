@@ -8,7 +8,7 @@
 
 이런 개인적인 Needs에 의해 제작하게 되었다.
 
-사실상 firestore + firebase storage 개선판에 가까울듯.
+사실상 firestore + firebase storage 개선판에 가깝다.
 
 ## 타게팅
 가상의 **애니메이션 OTT 회사에서 자사의 컨텐츠를 관리하는데 쓰는 툴**이라 생각하며 개발하고 있다.

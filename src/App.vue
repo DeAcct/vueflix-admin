@@ -55,7 +55,5 @@ console.clear();
 }
 .RouterView {
   padding-top: 14rem;
-  //스크롤 뒤 헤더 스타일 변경 테스트용
-  margin-bottom: 100vh;
 }
 </style>

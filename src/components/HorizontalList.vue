@@ -1,10 +1,12 @@
 <script lang="ts" setup>
 import { ref, Ref, onMounted } from "vue";
 import type { ListElementRoot } from "../types/ElementRoot.js";
-const horizontalListProps = defineProps<{
+
+interface HorizontalListProps {
   rootType: ListElementRoot;
-  data: Array<string>;
-}>();
+  scroll: "scroll" | "shade" | "none";
+}
+const horizontalListProps = defineProps<HorizontalListProps>();
 
 type ListElement = HTMLUListElement | HTMLDivElement;
 const scrollState: Ref<string> = ref("LeftEnd");
@@ -15,9 +17,10 @@ onMounted(() => {
     const target = $root.value;
     const containScrollWidth = Math.floor(target.scrollWidth);
     const width = Math.floor(target.offsetWidth);
-    if (width >= containScrollWidth) {
+    if (horizontalListProps.scroll === "none" || width >= containScrollWidth) {
       scrollState.value = "None";
-      return;
+    } else if (horizontalListProps.scroll === "shade") {
+      scrollState.value = "Shade";
     }
   }
 });
@@ -26,12 +29,18 @@ function setScrollState(e: Event) {
   const scrollLeft = Math.floor(target.scrollLeft);
   const width = Math.floor(target.offsetWidth);
   const containScrollWidth = Math.floor(target.scrollWidth);
-  if (scrollLeft === 0) {
-    scrollState.value = "LeftEnd";
-  } else if (scrollLeft + width === containScrollWidth) {
-    scrollState.value = "RightEnd";
+  if (horizontalListProps.scroll === "scroll") {
+    if (scrollLeft === 0) {
+      scrollState.value = "LeftEnd";
+    } else if (scrollLeft + width === containScrollWidth) {
+      scrollState.value = "RightEnd";
+    } else {
+      scrollState.value = "Mid";
+    }
+  } else if (horizontalListProps.scroll === "shade") {
+    scrollState.value = "Shade";
   } else {
-    scrollState.value = "Mid";
+    scrollState.value = "None";
   }
 }
 </script>
@@ -45,14 +54,7 @@ function setScrollState(e: Event) {
       @touchstart="setScrollState"
       ref="$root"
     >
-      <component
-        :is="rootType === 'ul' ? 'li' : 'div'"
-        v-for="item in data"
-        :key="item"
-        class="HorizontalList__Item"
-      >
-        #{{ item }}
-      </component>
+      <slot name="content"></slot>
     </component>
   </div>
 </template>
@@ -61,7 +63,7 @@ function setScrollState(e: Event) {
 .HorizontalList {
   position: relative;
   &__Body {
-    overflow-y: scroll;
+    overflow-x: scroll;
     display: flex;
 
     &::after,
@@ -94,16 +96,14 @@ function setScrollState(e: Event) {
     &--RightEnd::before {
       opacity: 1;
     }
-  }
-  &__Item {
-    min-width: fit-content;
-    padding: 0.5rem 0.75rem;
-    font-size: 1.2rem;
-    background-color: var(--bg-200);
-    border-radius: 9999px;
-    font-weight: 500;
-    &:not(:last-child) {
-      margin-right: 0.3rem;
+    &--Shade {
+      overflow-x: hidden;
+      &::after {
+        opacity: 1;
+      }
+    }
+    &--None {
+      overflow-x: hidden;
     }
   }
 }

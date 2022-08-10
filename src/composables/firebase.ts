@@ -56,7 +56,7 @@ export function useFirestoreSingleDoc<T>(
   collectionName: string,
   docName: string
 ) {
-  const _doc: Ref<T | undefined> = ref();
+  const singleDoc: Ref<T | undefined> = ref();
   const docRef = doc(db, collectionName, docName);
   const error: Ref<string> = ref("");
 
@@ -64,7 +64,7 @@ export function useFirestoreSingleDoc<T>(
     const unsub = onSnapshot(
       docRef,
       (doc) => {
-        _doc.value = doc.data() as T;
+        singleDoc.value = doc.data() as T;
       },
       () => {
         error.value = "firestore에서 데이터를 불러오는데 문제가 발생했습니다.";
@@ -74,7 +74,7 @@ export function useFirestoreSingleDoc<T>(
       unsub();
     });
   });
-  return { _doc, error };
+  return { singleDoc, error };
 }
 
 const storage = getStorage();
