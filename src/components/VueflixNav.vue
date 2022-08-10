@@ -97,8 +97,6 @@ function routeTo(address: string) {
           top: var(--card-padding);
           bottom: var(--card-padding);
         }
-        border-top-right-radius: 9999px;
-        border-bottom-right-radius: 9999px;
       }
       border-top-right-radius: 9999px;
       border-bottom-right-radius: 9999px;
