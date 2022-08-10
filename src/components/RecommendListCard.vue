@@ -55,17 +55,10 @@ const listLength = computed<number>(
       &:not(:last-child) {
         margin-right: 1rem;
       }
-      animation: marquee calc(v-bind(listLength) * 1s) linear infinite;
     }
   }
   &__Title {
     font-size: 1.4rem;
-  }
-}
-
-@keyframes marquee {
-  100% {
-    transform: translateX(calc((v-bind(listLength) + 1) * -6rem));
   }
 }
 </style>
