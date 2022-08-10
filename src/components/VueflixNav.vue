@@ -1,7 +1,10 @@
 <script lang="ts" setup>
-import { Ref, ref, watch } from "vue";
+import { Ref, ref, watch, onMounted } from "vue";
 import VueflixLogo from "./VueflixLogo.vue";
 import { RouteRecordName, useRoute, useRouter } from "vue-router";
+import IconBase from "./IconBase.vue";
+import NewProjectIcon from "./icons/NewProjectIcon.vue";
+import { useEventListener } from "../composables/event";
 const navProps = defineProps<{
   isOpen: boolean;
 }>();
@@ -42,31 +45,51 @@ function routeTo(address: string) {
   router.push(address);
   navEmits("address-move");
 }
+
+const viewHeight: Ref<string> = ref("");
+onMounted(() => {
+  viewHeight.value = `${window.innerHeight}px`;
+});
+useEventListener(window, "scroll", () => {
+  viewHeight.value = `${window.innerHeight}px`;
+});
 </script>
 
 <template>
   <nav class="VueflixNav">
-    <h1 class="VueflixNav__Logo">
-      <RouterLink to="/">
-        <VueflixLogo />
-        <span>관리자</span>
-      </RouterLink>
-    </h1>
-    <h2 class="VueflixNav__Title inner">사이트 메뉴</h2>
-    <ul class="VueflixNav__SiteMenu">
-      <li
-        :class="[
-          'SiteLink',
-          { 'SiteLink--Current': siteLink.name === currentAddress },
-        ]"
-        v-for="siteLink in siteLinks"
-        :key="siteLink.name"
-      >
-        <button class="inner" @click="routeTo(siteLink.to)" role="link">
-          {{ siteLink.name }}
-        </button>
-      </li>
-    </ul>
+    <div class="row-top">
+      <h1 class="VueflixNav__Logo">
+        <RouterLink to="/">
+          <VueflixLogo />
+          <span>관리자</span>
+        </RouterLink>
+      </h1>
+      <h2 class="VueflixNav__Title inner">사이트 메뉴</h2>
+      <ul class="VueflixNav__SiteMenu">
+        <li
+          :class="[
+            'SiteLink',
+            { 'SiteLink--Current': siteLink.name === currentAddress },
+          ]"
+          v-for="siteLink in siteLinks"
+          :key="siteLink.name"
+        >
+          <button class="inner" @click="routeTo(siteLink.to)" role="link">
+            {{ siteLink.name }}
+          </button>
+        </li>
+      </ul>
+    </div>
+    <div class="row-bottom">
+      <button class="NewProjectButton" @click="routeTo('#')">
+        <i class="NewProjectButton__Icon">
+          <IconBase icon-name="새 프로젝트 아이콘">
+            <NewProjectIcon />
+          </IconBase>
+        </i>
+        새 프로젝트 만들기
+      </button>
+    </div>
   </nav>
 </template>
 
@@ -74,7 +97,11 @@ function routeTo(address: string) {
 .VueflixNav {
   background-color: var(--text-100);
   width: 100vw;
-  height: 100vh;
+  height: v-bind(viewHeight);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding-bottom: 2rem;
   &__Logo {
     display: none;
   }
@@ -83,6 +110,12 @@ function routeTo(address: string) {
     margin-top: 7.6rem;
     font-weight: 900;
     margin-bottom: 1.5rem;
+  }
+  .row-bottom {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
   }
   &__SiteMenu {
     padding-right: var(--inner-padding);
@@ -103,6 +136,21 @@ function routeTo(address: string) {
       &--Current {
         background-color: var(--text-300);
       }
+    }
+  }
+  .NewProjectButton {
+    width: 20rem;
+    padding: 0.75rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 9999px;
+    background-color: var(--bg-200);
+    font-size: 1.5rem;
+    font-weight: 500;
+    &__Icon {
+      width: 1.8rem;
+      height: 1.8rem;
     }
   }
 }
