@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { ref, Ref, onMounted } from "vue";
+import { useEventListener } from "../composables/event";
 import type { ListElementRoot } from "../types/ElementRoot.js";
 
 interface HorizontalListProps {
@@ -43,6 +44,8 @@ function setScrollState(e: Event) {
     scrollState.value = "None";
   }
 }
+
+useEventListener(window, "resize", setScrollState);
 </script>
 
 <template>
@@ -104,6 +107,16 @@ function setScrollState(e: Event) {
     }
     &--None {
       overflow-x: hidden;
+    }
+  }
+}
+@media screen and (min-width: 768px) {
+  .HorizontalList {
+    &__Body {
+      &::after,
+      &::before {
+        content: none;
+      }
     }
   }
 }

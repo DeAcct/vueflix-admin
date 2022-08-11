@@ -43,99 +43,128 @@ const { docs: recommendLists } = useFirestoreDocs<RecommendListDoc>(
 
 <template>
   <div class="Dashboard">
-    <VueflixSection>
-      <template #title>애니메이션</template>
-      <template #counter>
-        <p class="Counter">{{ numbersofAnime }}</p>
-      </template>
-      <template #description>
-        <p class="Description">가장 최근 등록된 3개의 애니메이션입니다.</p>
-      </template>
-      <template #content>
-        <ul class="Contents Contents--Animes">
-          <AnimeListCard
-            v-for="doc in animes"
-            :anime-name="doc.name"
-            :poster="doc.poster"
-            :tags="doc.tag"
-            :made-by="doc.madeBy"
-            root-type="li"
-            :key="doc.name"
-          >
-            <template #ani-name>{{ doc.name }}</template>
-          </AnimeListCard>
-        </ul>
-        <RouterLink to="#" class="ViewMoreBtn">
-          더보기
-          <i class="ViewMoreBtn__Icon">
-            <IconBase icon-name="화살표">
-              <IconArrowNext />
-            </IconBase>
-          </i>
-        </RouterLink>
-      </template>
-    </VueflixSection>
-    <VueflixSection>
-      <template #title>추천 목록</template>
-      <template #description>
-        <p class="Description">가장 최근 등록된 3개의 추천 목록입니다.</p>
-      </template>
-      <template #content>
-        <ul class="Contents Contents--Recommend">
-          <RecommendListCard
-            v-for="recommendList in recommendLists"
-            root-type="li"
-            :recommend-list="recommendList"
-          />
-        </ul>
-        <RouterLink to="#" class="ViewMoreBtn">
-          더보기
-          <i class="ViewMoreBtn__Icon">
-            <IconBase icon-name="화살표">
-              <IconArrowNext />
-            </IconBase>
-          </i>
-        </RouterLink>
-      </template>
-    </VueflixSection>
+    <div class="flex-wrap">
+      <VueflixSection>
+        <template #title>애니메이션</template>
+        <template #counter>
+          <p class="Counter">{{ numbersofAnime }}</p>
+        </template>
+        <template #description>
+          <p class="Description">가장 최근 등록된 3개의 애니메이션입니다.</p>
+        </template>
+        <template #content>
+          <ul class="Contents Contents--Animes">
+            <AnimeListCard
+              v-for="doc in animes"
+              :anime-name="doc.name"
+              :poster="doc.poster"
+              :tags="doc.tag"
+              :made-by="doc.madeBy"
+              root="li"
+              type="link"
+              :key="doc.name"
+            >
+              <template #ani-name>{{ doc.name }}</template>
+            </AnimeListCard>
+          </ul>
+          <RouterLink to="/anime" class="ViewMoreBtn">
+            더보기
+            <i class="ViewMoreBtn__Icon">
+              <IconBase icon-name="화살표">
+                <IconArrowNext />
+              </IconBase>
+            </i>
+          </RouterLink>
+        </template>
+      </VueflixSection>
+      <VueflixSection>
+        <template #title>추천 목록</template>
+        <template #description>
+          <p class="Description">가장 최근 등록된 3개의 추천 목록입니다.</p>
+        </template>
+        <template #content>
+          <ul class="Contents Contents--Recommend">
+            <RecommendListCard
+              v-for="recommendList in recommendLists"
+              root="li"
+              :recommend-list="recommendList"
+            />
+          </ul>
+          <RouterLink to="/recommend-list" class="ViewMoreBtn">
+            더보기
+            <i class="ViewMoreBtn__Icon">
+              <IconBase icon-name="화살표">
+                <IconArrowNext />
+              </IconBase>
+            </i>
+          </RouterLink>
+        </template>
+      </VueflixSection>
+    </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
 .Dashboard {
-  .VueflixSection {
-    margin-bottom: 2.5rem;
-  }
-  .Counter {
-    font-size: 1.5rem;
-  }
-  .Description {
-    font-size: 1.4rem;
-    margin-top: 0.7rem;
-  }
-  .Contents {
-    width: 100%;
+  .flex-wrap {
     display: flex;
     flex-direction: column;
-    .AnimeListCard {
-      border-bottom: 1px solid var(--bg-200);
+    .VueflixSection {
+      margin-bottom: 2.5rem;
+    }
+    .Counter {
+      font-size: 1.5rem;
+    }
+    .Description {
+      font-size: 1.4rem;
+      margin-top: 0.7rem;
+    }
+    .Contents {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      .AnimeListCard {
+        border-bottom: 1px solid var(--bg-200);
+      }
+    }
+    .ViewMoreBtn {
+      width: 12rem;
+      padding: 0.75rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-radius: 9999px;
+      background-color: var(--bg-200);
+      font-size: 1.5rem;
+      font-weight: 500;
+      &__Icon {
+        width: 1.8rem;
+        height: 1.8rem;
+      }
+      margin: 1.5rem 0;
     }
   }
-  .ViewMoreBtn {
-    width: 12rem;
-    padding: 0.75rem 1.5rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-radius: 9999px;
-    background-color: var(--bg-200);
-    font-size: 1.5rem;
-    font-weight: 500;
-    &__Icon {
-      width: 1.8rem;
-      height: 1.8rem;
+}
+
+@media screen and (min-width: 768px) {
+  .Dashboard {
+    .flex-wrap {
+      flex-direction: row;
+      justify-content: space-between;
+      width: 100%;
+      .VueflixSection {
+        width: 48%;
+        padding: 0;
+        margin: 0;
+      }
     }
-    margin: 1.5rem 0;
+  }
+}
+@media screen and (min-width: 1024px) {
+  .Dashboard {
+    .flex-wrap {
+      width: min(1024px, 100%);
+    }
   }
 }
 </style>

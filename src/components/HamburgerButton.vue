@@ -23,8 +23,6 @@ const hamburgerButtonClasses = computed(() => [
 .HamburgerButton {
   position: fixed;
   z-index: 120;
-  width: 3.6rem;
-  height: 3.6rem;
   padding: 1rem;
   display: flex;
   flex-direction: column;

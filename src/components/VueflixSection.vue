@@ -1,5 +1,5 @@
 <template>
-  <section class="VueflixSection inner">
+  <section class="VueflixSection">
     <div class="headtext">
       <div class="row-top">
         <h2 class="VueflixSection__Title">

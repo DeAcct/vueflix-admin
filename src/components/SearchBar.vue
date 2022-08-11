@@ -30,7 +30,7 @@ const placeholderClasses = computed(() => [
 </script>
 
 <template>
-  <label :class="[...searchbarClasses, 'inner']">
+  <label :class="searchbarClasses">
     <i class="SearchBar__Icon">
       <IconBase icon-name="검색 아이콘">
         <IconSearch />
@@ -60,10 +60,7 @@ const placeholderClasses = computed(() => [
   box-shadow: var(--box-shadow);
   border-radius: 9999px;
   border: 1px solid transparent;
-  padding: {
-    top: 1rem;
-    bottom: 1rem;
-  }
+  padding: 1rem var(--card-padding);
   cursor: text;
 
   &__Icon {
@@ -80,7 +77,7 @@ const placeholderClasses = computed(() => [
 
   &__Placeholder {
     position: absolute;
-    left: calc(var(--inner-padding) + 3.4rem);
+    left: calc(var(--card-padding) + 3.4rem);
     font-size: 1.3rem;
     color: var(--bg-500);
     visibility: hidden;

@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { computed, Ref, ref } from "vue";
 import type { ImageFileName } from "../types/MediaExtension";
 import type { CardElementRoot } from "../types/ElementRoot";
 import HorizontalList from "./HorizontalList.vue";
@@ -10,12 +9,13 @@ const animeListCardProps = defineProps<{
   poster: ImageFileName;
   tags?: Array<string>;
   madeBy: Array<string>;
-  rootType: CardElementRoot;
+  root: CardElementRoot;
+  type: "link" | "presentation";
 }>();
 </script>
 
 <template>
-  <component :is="rootType" class="AnimeListCard">
+  <component :is="root" class="AnimeListCard">
     <AnimePoster
       :src="`${animeName}/${poster}`"
       :alt="`${animeName}포스터`"
@@ -23,14 +23,22 @@ const animeListCardProps = defineProps<{
     />
     <div class="AnimeListCard__Text">
       <div class="row-top">
-        <strong class="title">
+        <component
+          :is="type === 'link' ? 'RouterLink' : 'strong'"
+          :to="type === 'link' ? '#' : ''"
+          class="title"
+        >
           <slot name="ani-name"></slot>
-        </strong>
-        <p class="company">
+        </component>
+        <component
+          :is="type === 'link' ? 'RouterLink' : 'p'"
+          :to="type === 'link' ? '#' : ''"
+          class="company"
+        >
           <template v-for="company in madeBy" :key="company">
             {{ company }}
           </template>
-        </p>
+        </component>
       </div>
       <HorizontalList
         v-if="tags"

@@ -14,19 +14,26 @@ watch(
   }
 );
 
-const isScroll: Ref<boolean> = ref(false);
+const isExpanded: Ref<boolean> = ref(false);
+const beforeScroll: Ref<number> = ref(Math.floor(window.scrollY));
 useEventListener(window, "scroll", () => {
-  isScroll.value = 0 < Math.round(window.scrollY);
+  const newScroll = Math.floor(window.scrollY);
+  if (newScroll === 0) {
+    isExpanded.value = 0 < Math.floor(window.scrollY);
+  } else {
+    isExpanded.value = newScroll > beforeScroll.value;
+  }
+  beforeScroll.value = Math.floor(window.scrollY);
 });
 const routerViewClasses = computed(() => [
   "RouterView",
-  { "RouterView--HeaderExpanded": !isScroll.value },
+  { "RouterView--HeaderExpanded": isExpanded.value },
 ]);
 console.clear();
 </script>
 
 <template>
-  <VueflixAppBar :expanded="!isScroll">
+  <VueflixAppBar :expanded="!isExpanded">
     <template #activity-name>
       {{ route.name }}
     </template>
@@ -54,6 +61,15 @@ console.clear();
   }
 }
 .RouterView {
-  padding-top: 14rem;
+  padding: 14rem var(--inner-padding) 0;
+}
+
+@media screen and (min-width: 1024px) {
+  .RouterView {
+    display: flex;
+    justify-content: center;
+    width: calc(100% - var(--nav-width));
+    margin-left: calc(var(--nav-width));
+  }
 }
 </style>
