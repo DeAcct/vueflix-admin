@@ -12,7 +12,7 @@ const animeListCardProps = defineProps<{
 
 <template>
   <component :is="root" class="RecommendListCard">
-    <HorizontalList root-type="ul" scroll="scroll">
+    <HorizontalList root-type="ul" scroll="scroll" :wrap="false">
       <template #content>
         <AnimePoster
           v-for="recommendPoster in recommendList.list"

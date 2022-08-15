@@ -1,11 +1,13 @@
 <script lang="ts" setup>
-import { ref, Ref, onMounted } from "vue";
+import { ref, Ref, computed, onMounted } from "vue";
 import { useEventListener } from "../composables/event";
-import type { ListElementRoot } from "../types/ElementRoot.js";
+import type { ListElementRoot } from "../types/ElementRoot";
+import type { OptionalClass } from "../types/Classes";
 
 interface HorizontalListProps {
   rootType: ListElementRoot;
   scroll: "scroll" | "shade" | "none";
+  wrap: boolean;
 }
 const horizontalListProps = defineProps<HorizontalListProps>();
 
@@ -46,13 +48,19 @@ function setScrollState(e: Event) {
 }
 
 useEventListener(window, "resize", setScrollState);
+
+const bodyClasses = computed<Array<string | OptionalClass>>(() => [
+  "HorizontalList__Body",
+  `HorizontalList__Body--${scrollState.value}`,
+  { "HorizontalList__Body--Wrap": horizontalListProps.wrap },
+]);
 </script>
 
 <template>
   <div class="HorizontalList">
     <component
       :is="rootType"
-      :class="['HorizontalList__Body', `HorizontalList__Body--${scrollState}`]"
+      :class="bodyClasses"
       @scroll="setScrollState"
       @touchstart="setScrollState"
       ref="$root"
@@ -107,6 +115,13 @@ useEventListener(window, "resize", setScrollState);
     }
     &--None {
       overflow-x: hidden;
+    }
+  }
+}
+@media (hover: hover) and (pointer: fine) {
+  .HorizontalList {
+    &__Body--Wrap {
+      flex-wrap: wrap;
     }
   }
 }

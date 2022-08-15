@@ -3,6 +3,9 @@ import { ref, Ref, computed, watch } from "vue";
 import VueflixAppBar from "@/components/VueflixAppBar.vue";
 import { useRoute } from "vue-router";
 import { useEventListener } from "./composables/event";
+import { useNav } from "./store/nav";
+import { storeToRefs } from "pinia";
+import { useA11y } from "./store/accessibility";
 
 const route = useRoute();
 watch(
@@ -12,6 +15,12 @@ watch(
       document.title = route.meta.title;
     }
   }
+);
+
+const navStore = useNav();
+const { isNavOpen } = storeToRefs(navStore);
+const navWidth = computed<string>(() =>
+  isNavOpen.value ? "25rem" : "calc(3.6rem + var(--card-padding) * 2)"
 );
 
 const isExpanded: Ref<boolean> = ref(false);
@@ -29,6 +38,15 @@ const routerViewClasses = computed(() => [
   "RouterView",
   { "RouterView--HeaderExpanded": isExpanded.value },
 ]);
+
+const a11yStore = useA11y();
+const { reduceMotion } = storeToRefs(a11yStore);
+const transition = computed<{ time: string; easing: string }>(() =>
+  reduceMotion.value
+    ? { time: "none", easing: "" }
+    : { time: "150ms", easing: "cubic-bezier(0.85, 0, 0.15, 1)" }
+);
+
 console.clear();
 </script>
 
@@ -53,7 +71,7 @@ console.clear();
 .fade {
   &-enter-active,
   &-leave-active {
-    transition: opacity 150ms;
+    transition: opacity v-bind("transition.time") v-bind("transition.easing");
   }
   &-enter-from,
   &-leave-to {
@@ -68,8 +86,9 @@ console.clear();
   .RouterView {
     display: flex;
     justify-content: center;
-    width: calc(100% - var(--nav-width));
-    margin-left: calc(var(--nav-width));
+    width: calc(100% - v-bind(navWidth));
+    margin-left: v-bind(navWidth);
+    transition: v-bind("transition.time") v-bind("transition.easing");
   }
 }
 </style>

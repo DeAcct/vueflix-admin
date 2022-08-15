@@ -25,14 +25,14 @@ const animeListCardProps = defineProps<{
       <div class="row-top">
         <component
           :is="type === 'link' ? 'RouterLink' : 'strong'"
-          :to="type === 'link' ? '#' : ''"
+          :to="type === 'link' ? '#' : undefined"
           class="title"
         >
           <slot name="ani-name"></slot>
         </component>
         <component
           :is="type === 'link' ? 'RouterLink' : 'p'"
-          :to="type === 'link' ? '#' : ''"
+          :to="type === 'link' ? '#' : undefined"
           class="company"
         >
           <template v-for="company in madeBy" :key="company">
@@ -45,6 +45,7 @@ const animeListCardProps = defineProps<{
         root-type="ul"
         class="row-bottom"
         scroll="scroll"
+        :wrap="true"
       >
         <template #content>
           <li v-for="tag in tags" :key="tag" class="HorizontalList__Item">
@@ -60,19 +61,19 @@ const animeListCardProps = defineProps<{
 .AnimeListCard {
   display: flex;
   align-items: center;
-  height: calc(6rem / 3 * 4 + (var(--card-padding) * 2));
   padding: var(--card-padding);
   .AnimePoster {
+    height: calc(6rem / 3 * 4);
     width: 6rem;
-    height: 100%;
     border-radius: var(--radius-1);
   }
   &__Text {
     display: flex;
+    height: calc(6rem / 3 * 4);
     flex-direction: column;
     justify-content: space-between;
     width: calc(100% - 7rem);
-    height: 100%;
+
     .title {
       display: block;
       margin-bottom: 1rem;
@@ -90,10 +91,25 @@ const animeListCardProps = defineProps<{
         background-color: var(--bg-200);
         border-radius: 9999px;
         font-weight: 500;
+        margin: {
+          top: 0.15rem;
+          bottom: 0.15rem;
+        }
         &:not(:last-child) {
           margin-right: 0.3rem;
         }
       }
+    }
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .AnimeListCard {
+    &__Text {
+      justify-content: flex-start;
+    }
+    .row-top {
+      margin-bottom: 1rem;
     }
   }
 }
