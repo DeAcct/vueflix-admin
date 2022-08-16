@@ -39,10 +39,13 @@ const transition = computed<{ time: string; easing: string }>(() =>
   justify-content: space-between;
   align-items: center;
   border-radius: 50%;
+  border: 1px solid transparent;
+  transition: v-bind("transition.time") v-bind("transition.easing");
   .line {
     width: 1.8rem;
     height: 0.2rem;
     background-color: var(--bg-900);
+    border-radius: 9999px;
     transition: v-bind("transition.time") v-bind("transition.easing");
   }
   &--Opened {
@@ -60,6 +63,12 @@ const transition = computed<{ time: string; easing: string }>(() =>
         transform: rotate(-45deg);
       }
     }
+  }
+  &:focus {
+    border-color: var(--theme-500);
+  }
+  &:active {
+    background-color: var(--theme-200);
   }
 }
 </style>

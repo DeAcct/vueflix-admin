@@ -25,20 +25,23 @@ const animeListCardProps = defineProps<{
       <div class="row-top">
         <component
           :is="type === 'link' ? 'RouterLink' : 'strong'"
-          :to="type === 'link' ? '#' : undefined"
+          :to="type === 'link' ? `/anime-detail/${animeName}` : undefined"
           class="title"
         >
           <slot name="ani-name"></slot>
         </component>
-        <component
-          :is="type === 'link' ? 'RouterLink' : 'p'"
-          :to="type === 'link' ? '#' : undefined"
-          class="company"
-        >
-          <template v-for="company in madeBy" :key="company">
+        <div class="company">
+          <component
+            :is="type === 'link' ? 'RouterLink' : 'p'"
+            :to="
+              type === 'link' ? { name: '검색', query: { company } } : undefined
+            "
+            v-for="company in madeBy"
+            :key="company"
+          >
             {{ company }}
-          </template>
-        </component>
+          </component>
+        </div>
       </div>
       <HorizontalList
         v-if="tags"

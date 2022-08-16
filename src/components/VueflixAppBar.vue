@@ -71,7 +71,7 @@ const transition = computed<{ time: string; easing: string }>(() =>
         <SearchBar v-if="device !== 'mobile'" />
       </div>
     </div>
-    <SearchBar v-if="expanded && device === 'mobile'"></SearchBar>
+    <SearchBar v-if="expanded && device === 'mobile'" />
     <VueflixNav />
   </header>
 </template>
@@ -92,11 +92,6 @@ const transition = computed<{ time: string; easing: string }>(() =>
     font-weight: 900;
     margin-left: 4.1rem;
   }
-  &__SearchBarOpener {
-    width: 3.6rem;
-    height: 3.6rem;
-    padding: 0.6rem;
-  }
 
   .HamburgerButton {
     width: 3.6rem;
@@ -113,9 +108,12 @@ const transition = computed<{ time: string; easing: string }>(() =>
       align-items: center;
     }
   }
+  .SearchBar {
+    height: 4.6rem;
+  }
   &--Expanded {
     backdrop-filter: unset;
-    height: 14rem;
+    height: var(--header-height);
     padding: {
       top: 2rem;
       bottom: 2rem;
@@ -152,8 +150,15 @@ const transition = computed<{ time: string; easing: string }>(() =>
       left: 0;
       transform: none;
     }
-    .row-top .col-right {
-      width: 50rem;
+    .row-top {
+      margin-bottom: 0;
+      align-items: unset;
+      .col-left {
+        height: 3.6rem;
+      }
+      .col-right {
+        width: 50rem;
+      }
     }
   }
 }

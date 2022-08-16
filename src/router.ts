@@ -25,6 +25,19 @@ const routes = [
       title: "뷰플릭스 어드민 - 추천 목록",
     },
   },
+  {
+    path: "/search",
+    name: "검색",
+    component: () => import("@/views/Search.vue"),
+    meta: {
+      title: "검색",
+    },
+    props: true,
+  },
+  {
+    path: "/anime-detail/:title",
+    component: () => import("@/views/AnimeDetail.vue"),
+  },
 ];
 
 export const router = createRouter({

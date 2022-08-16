@@ -79,7 +79,7 @@ console.clear();
   }
 }
 .RouterView {
-  padding: 14rem var(--inner-padding) 0;
+  padding: var(--header-height) var(--inner-padding) 0;
 }
 
 @media screen and (min-width: 1024px) {
