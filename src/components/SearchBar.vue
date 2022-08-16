@@ -87,11 +87,9 @@ const transition = computed<{ time: string; easing: string }>(() =>
   <div :class="searchbarClasses">
     <div class="Body" @click="clickLabel">
       <button @click.stop="search" class="SearchBar__SubmitButton">
-        <i class="icon">
-          <IconBase icon-name="검색 아이콘">
-            <IconSearch />
-          </IconBase>
-        </i>
+        <IconBase icon-name="검색 아이콘">
+          <IconSearch />
+        </IconBase>
       </button>
       <input
         class="SearchBar__Input"
@@ -150,14 +148,8 @@ const transition = computed<{ time: string; easing: string }>(() =>
     cursor: text;
   }
 
-  &__Icon {
-    width: 2.4rem;
-    height: 2.4rem;
-    display: flex;
-    margin-right: 1rem;
-  }
-
   &__SubmitButton {
+    flex-shrink: 0;
     width: 2.4rem;
     height: 2.4rem;
     margin-right: 1rem;
@@ -177,6 +169,7 @@ const transition = computed<{ time: string; easing: string }>(() =>
   }
 
   &__Input {
+    width: calc(100% - 3.4rem);
     font-weight: 500;
   }
 
