@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { Ref, ref, computed, reactive } from "vue";
+import { Ref, ref, computed, reactive, watch } from "vue";
 import { useRouter } from "vue-router";
 import IconBase from "./IconBase.vue";
 import IconSearch from "./icons/IconSearch.vue";
@@ -13,6 +13,11 @@ const router = useRouter();
 function setRawTag(e: Event) {
   rawTag.value = (e.target as HTMLInputElement).value;
 }
+watch(rawTag, () => {
+  if (rawTag.value.length !== 0) {
+    tagOverayOpen();
+  }
+});
 
 const inputFocused: Ref<boolean> = ref(false);
 function onFocusIn() {
