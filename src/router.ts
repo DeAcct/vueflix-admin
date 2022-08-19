@@ -36,6 +36,7 @@ const routes = [
   },
   {
     path: "/anime-detail/:title",
+    name: "상세페이지",
     component: () => import("@/views/AnimeDetail.vue"),
   },
 ];

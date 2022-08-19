@@ -3,7 +3,6 @@ import { ref, Ref } from "vue";
 import IconBase from "./IconBase.vue";
 
 const uploadedFile: Ref<File | undefined> = ref(undefined);
-console.log(uploadedFile.value);
 </script>
 
 <template>

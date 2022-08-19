@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import { ref, Ref, computed, watch } from "vue";
-import VueflixAppBar from "@/components/VueflixAppBar.vue";
 import { useRoute } from "vue-router";
-import { useEventListener } from "./composables/event";
-import { useNav } from "./store/nav";
 import { storeToRefs } from "pinia";
-import { useA11y } from "./store/accessibility";
+import VueflixAppBar from "@/components/VueflixAppBar.vue";
+import { useNav } from "./store/nav";
+import { useEventListener } from "./composables/event";
+import { useCSSMotion } from "./composables/motions";
 
 const route = useRoute();
 watch(
-  () => route.meta.title,
+  () => route.path,
   () => {
     if (typeof route.meta.title === "string") {
       document.title = route.meta.title;
@@ -34,18 +34,8 @@ useEventListener(window, "scroll", () => {
   }
   beforeScroll.value = Math.floor(window.scrollY);
 });
-const routerViewClasses = computed(() => [
-  "RouterView",
-  { "RouterView--HeaderExpanded": isExpanded.value },
-]);
 
-const a11yStore = useA11y();
-const { reduceMotion } = storeToRefs(a11yStore);
-const transition = computed<{ time: string; easing: string }>(() =>
-  reduceMotion.value
-    ? { time: "none", easing: "" }
-    : { time: "150ms", easing: "cubic-bezier(0.85, 0, 0.15, 1)" }
-);
+const transition = useCSSMotion("300ms", "cubic-bezier(0.85, 0, 0.15, 1)");
 
 console.clear();
 </script>
@@ -53,10 +43,10 @@ console.clear();
 <template>
   <VueflixAppBar :expanded="!isExpanded">
     <template #activity-name>
-      {{ route.name }}
+      {{ route.params.title ? route.params.title : route.name }}
     </template>
   </VueflixAppBar>
-  <RouterView v-slot="{ Component }" :class="routerViewClasses">
+  <RouterView v-slot="{ Component }" class="RouterView">
     <Transition name="fade">
       <component :is="Component" :key="route.name"></component>
     </Transition>
@@ -66,12 +56,13 @@ console.clear();
 <style lang="scss" scoped>
 .VueflixAppBar {
   position: fixed;
-  z-index: 90;
+  z-index: var(--app-bar-z-index);
 }
 .fade {
   &-enter-active,
   &-leave-active {
-    transition: opacity v-bind("transition.time") v-bind("transition.easing");
+    transition: opacity v-bind("transition.duration")
+      v-bind("transition.easing");
   }
   &-enter-from,
   &-leave-to {
@@ -79,7 +70,7 @@ console.clear();
   }
 }
 .RouterView {
-  padding: var(--header-height) var(--inner-padding) 0;
+  padding: var(--app-bar-height) var(--inner-padding) 0;
 }
 
 @media screen and (min-width: 1024px) {
@@ -88,7 +79,7 @@ console.clear();
     justify-content: center;
     width: calc(100% - v-bind(navWidth));
     margin-left: v-bind(navWidth);
-    transition: v-bind("transition.time") v-bind("transition.easing");
+    transition: v-bind("transition.duration") v-bind("transition.easing");
   }
 }
 </style>

@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import { Ref, ref, computed, watch } from "vue";
+import { Ref, ref, computed, reactive } from "vue";
 import { useRouter } from "vue-router";
-import { OptionalClassItem } from "../types/Classes";
 import IconBase from "./IconBase.vue";
 import IconSearch from "./icons/IconSearch.vue";
-import HorizontalList from "./HorizontalList.vue";
-import { storeToRefs } from "pinia";
-import { useA11y } from "../store/accessibility";
+import { useBEMClass } from "../composables/classNames";
+import { useCSSMotion } from "../composables/motions";
+import TagOveray from "./TagOveray.vue";
+import type { TagType } from "../types/SearchTagType";
 
 const rawTag: Ref<string> = ref("");
 const router = useRouter();
@@ -16,77 +16,92 @@ function setRawTag(e: Event) {
 
 const inputFocused: Ref<boolean> = ref(false);
 function onFocusIn() {
+  tagOverayOpen.value = true;
   inputFocused.value = true;
 }
 function onFocusOut() {
   inputFocused.value = false;
 }
-const searchbarClasses = computed<[string, OptionalClassItem]>(() => [
-  "SearchBar",
-  { "SearchBar--Focused": inputFocused.value },
-]);
+const searchbarClasses = useBEMClass("SearchBar", "Focused", inputFocused);
 
 const placeholderVisible = computed<boolean>(() => rawTag.value.length === 0);
-const placeholderClasses = computed<[string, OptionalClassItem]>(() => [
+const placeholderClasses = useBEMClass(
   "SearchBar__Placeholder",
-  { "SearchBar__Placeholder--Visible": placeholderVisible.value },
-]);
+  "Visible",
+  placeholderVisible
+);
 
-type TagType = "keyword" | "company" | "title" | "director";
 const tagType = new RegExp("^(keyword|company|title|director)");
 const isValidTagType = computed<boolean>(() => tagType.test(rawTag.value));
+const currentTyping = computed<string>(() => rawTag.value.split(":")[0]);
 const $Input: Ref<HTMLInputElement | null> = ref(null);
-interface Tag {
-  type: TagType;
-  value: Array<string>;
-}
-const splitTags: Ref<Array<Tag | null>> = ref([]);
 function clickLabel() {
   if ($Input.value) {
     $Input.value.focus();
   }
 }
+
+const splitTags = reactive<Record<TagType, Array<string>>>({
+  keyword: [],
+  company: [],
+  title: [],
+  director: [],
+});
+const searchAble = computed<boolean>(
+  () =>
+    splitTags.keyword.length !== 0 ||
+    splitTags.company.length !== 0 ||
+    splitTags.title.length !== 0 ||
+    splitTags.director.length !== 0
+);
 function tagSplit() {
-  console.log("분리");
   const [type, value] = rawTag.value.split(":") as [TagType, string];
-  if (!value || !isValidTagType) {
+  if (!value || !isValidTagType.value) {
     return;
   }
-  const isTagExists = splitTags.value.find((tag) => tag?.type === type);
-  if (isTagExists) {
-    if (!isTagExists.value.includes(value)) {
-      isTagExists.value.push(value);
-    }
-  } else {
-    splitTags.value.push({ type, value: [value] });
+  const underbarReplacedValue = value.replace("_", " ");
+  if (splitTags[type].includes(underbarReplacedValue)) {
+    return;
   }
+  splitTags[type].push(underbarReplacedValue);
   rawTag.value = "";
-  console.log(rawTag.value);
+}
+function deleteTag(tagName: TagType, value: string) {
+  splitTags[tagName] = splitTags[tagName].filter((item) => value !== item);
 }
 function search() {
-  if (rawTag.value.length !== 0) {
-    router.push({ name: "검색", query: { tag: rawTag.value } });
+  if (searchAble.value) {
+    router.push({ name: "검색", query: splitTags });
+    splitTags.keyword = [];
+    splitTags.company = [];
+    splitTags.title = [];
+    splitTags.director = [];
+    inputFocused.value = false;
+  } else {
+    inputFocused.value = true;
   }
 }
 
-const tagOverayClasses = computed<[string, OptionalClassItem]>(() => [
-  "TagOveray",
-  { "TagOveray--Visible": inputFocused.value },
-]);
-
-const a11yStore = useA11y();
-const { reduceMotion } = storeToRefs(a11yStore);
-const transition = computed<{ time: string; easing: string }>(() =>
-  reduceMotion.value
-    ? { time: "none", easing: "" }
-    : { time: "150ms", easing: "cubic-bezier(0.85, 0, 0.15, 1)" }
+const tagOverayOpen: Ref<boolean> = ref(false);
+function tagOverayClose() {
+  tagOverayOpen.value = false;
+}
+const tagOverayVisible = computed<boolean>(
+  () => inputFocused.value || tagOverayOpen.value
 );
+const tagOverayClasses = useBEMClass("TagOveray", "Visible", tagOverayVisible);
+const backdropCloseButtonClasses = useBEMClass(
+  "SearchBar__BackdropCloseButton",
+  "Visible",
+  tagOverayVisible
+);
+const motion = useCSSMotion("150ms", "cubic-bezier(0.85, 0, 0.15, 1)");
 </script>
 
 <template>
-  <div :class="searchbarClasses">
+  <form :class="searchbarClasses" @submit.prevent="search">
     <div class="Body" @click="clickLabel">
-      <button @click.stop="search" class="SearchBar__SubmitButton">
+      <button class="SearchBar__SubmitButton" type="submit" @click="search">
         <IconBase icon-name="검색 아이콘">
           <IconSearch />
         </IconBase>
@@ -96,35 +111,42 @@ const transition = computed<{ time: string; easing: string }>(() =>
         @input="setRawTag"
         @focusin="onFocusIn"
         @focusout="onFocusOut"
-        @keydown.prevent.tab="tagSplit"
-        @keydown.prevent.space
+        @keydown.prevent.space="tagSplit"
+        @keydown.prevent.tab
         :value="rawTag"
         ref="$Input"
-        autofocus
       />
       <span :class="placeholderClasses">
         검색할 태그를 입력하세요 [태그종류:검색어]
       </span>
     </div>
 
-    <div :class="tagOverayClasses" v-if="true">
-      <div class="row-top">
-        <h2 class="TagOveray__Title">입력된 태그</h2>
+    <TagOveray
+      :class="tagOverayClasses"
+      :current-typing="currentTyping"
+      :split-tags="splitTags"
+      @delete-tag="deleteTag"
+      @tag-overay-close="tagOverayClose"
+    >
+      <template #title> 입력된 태그 </template>
+      <template #guide-text>
         <ul class="TagOveray__GuideText">
-          <li class="guide">탭키를 누르면 여기에 나타납니다.</li>
-          <li class="guide">스페이스바는 사용할 수 없습니다.</li>
+          <li class="guide">SpaceBar를 누르면 여기에 나타납니다.</li>
+          <li class="guide">Enter를 누르면 검색합니다.</li>
+          <li class="guide">_(언더바)는 띄어쓰기로 변환됩니다.</li>
+          <li class="guide">탭키는 사용할 수 없습니다.</li>
         </ul>
-        <ul class="TagOveray__List" v-if="splitTags.length !== 0">
-          <li v-for="tag in splitTags" class="TagItem">
-            {{ tag?.type }}
-            <span v-for="value in tag?.value" class="TagItem__Sub">
-              {{ value }}
-            </span>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </div>
+      </template>
+    </TagOveray>
+
+    <button
+      :class="backdropCloseButtonClasses"
+      type="button"
+      @click="tagOverayClose"
+    >
+      <span class="blind">태그 오버레이 창 닫기</span>
+    </button>
+  </form>
 </template>
 
 <style lang="scss" scoped>
@@ -135,7 +157,7 @@ const transition = computed<{ time: string; easing: string }>(() =>
   position: relative;
   .Body {
     position: absolute;
-    z-index: 10;
+    z-index: var(--search-bar-body-z-index);
     top: 0;
     width: 100%;
     display: flex;
@@ -174,26 +196,13 @@ const transition = computed<{ time: string; easing: string }>(() =>
   }
 
   .TagOveray {
-    z-index: 5;
-    position: absolute;
-    top: 5.6rem;
-    z-index: -1;
-    opacity: 0;
-    transform: translateY(-1rem);
-    width: 100%;
-    min-height: 4.6rem;
-    border-radius: 2.3rem;
-    padding: var(--card-padding);
-    background-color: var(--bg-100);
-    box-shadow: var(--box-shadow);
-    &__Title {
-      font-size: 1.7rem;
-      margin-bottom: 1rem;
-    }
     &__GuideText {
-      line-height: 1.5rem;
+      border-top: 1px solid var(--bg-200);
+      padding-top: calc(var(--card-padding) - 0.5rem);
+      margin-top: calc(var(--card-padding) - 0.5rem);
       .guide {
-        font-size: 1.2rem;
+        line-height: 1.5rem;
+        font-size: 1.4rem;
         &:not(:last-child) {
           margin-bottom: 0.5rem;
         }
@@ -203,35 +212,22 @@ const transition = computed<{ time: string; easing: string }>(() =>
         }
       }
     }
-    &__List {
-      margin-top: 0.7rem;
-      display: flex;
-      flex-direction: column;
-    }
-    .TagItem {
-      display: flex;
-      align-items: center;
-      flex-shrink: 0;
-      width: fit-content;
-      font-size: 1.2rem;
-      font-weight: 500;
-      &:not(:last-child) {
-        margin-bottom: 0.5rem;
-      }
-      &__Sub {
-        padding: 0.5rem 0.75rem;
-        font-weight: 500;
-        background-color: var(--bg-200);
-        border-radius: 9999px;
-        margin-left: 0.3rem;
-      }
-    }
+  }
 
-    transition: v-bind("transition.time") v-bind("transition.easing");
+  &__BackdropCloseButton {
+    position: fixed;
+    z-index: var(--search-bar-backdrop-close-button-z-index);
+    visibility: hidden;
+    opacity: 0;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.1);
+    transition: v-bind("motion.duration") v-bind("motion.easing");
     &--Visible {
+      visibility: visible;
       opacity: 1;
-      z-index: 10;
-      transform: translateY(0);
     }
   }
 

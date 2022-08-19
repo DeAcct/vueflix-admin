@@ -64,7 +64,15 @@ svg {
   --radius-3: 0.9rem;
   --radius-2: 0.6rem;
   --radius-1: 0.3rem;
-  --header-height: 14.2rem;
+  --app-bar-height: 14.2rem;
+
+  --router-view-content-z-index: 5;
+  --app-bar-z-index: 10;
+  --hamburger-button-z-index: 15;
+  --search-bar-backdrop-close-button-z-index: 20;
+  --tag-overay-z-index: 25;
+  --search-bar-body-z-index: 30;
+  --nav-z-index: 35;
 }
 
 header,
@@ -163,6 +171,16 @@ summary {
   :root {
     --inner-padding: 5rem;
     --card-padding: 3rem;
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  :root {
+    --nav-z-index: 15;
+    --search-bar-backdrop-close-button-z-index: 20;
+    --tag-overay-z-index: 25;
+    --search-bar-body-z-index: 30;
+    --hamburger-button-z-index: 35;
   }
 }
 

@@ -4,7 +4,7 @@ import type { RecommendListDoc } from "../types/RecommendListDoc";
 import HorizontalList from "./HorizontalList.vue";
 import AnimePoster from "./AnimePoster.vue";
 
-const animeListCardProps = defineProps<{
+defineProps<{
   root: CardElementRoot;
   recommendList: RecommendListDoc;
 }>();

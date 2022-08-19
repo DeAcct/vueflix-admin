@@ -1,27 +1,22 @@
 <script lang="ts" setup>
-import { computed } from "vue";
-import { storeToRefs } from "pinia";
-import { useA11y } from "../store/accessibility";
+import { toRef } from "vue";
+import { useBEMClass } from "../composables/classNames";
+import { useCSSMotion } from "../composables/motions";
 
 const hamburgerButtonProps = defineProps<{
   isOpen: boolean;
 }>();
-const hamburgerButtonClasses = computed(() => [
+const hamburgerButtonClass = useBEMClass(
   "HamburgerButton",
-  { "HamburgerButton--Opened": hamburgerButtonProps.isOpen },
-]);
-
-const a11yStore = useA11y();
-const { reduceMotion } = storeToRefs(a11yStore);
-const transition = computed<{ time: string; easing: string }>(() =>
-  reduceMotion.value
-    ? { time: "none", easing: "" }
-    : { time: "150ms", easing: "cubic-bezier(0.85, 0, 0.15, 1)" }
+  "Opened",
+  toRef(hamburgerButtonProps, "isOpen")
 );
+
+const motion = useCSSMotion("300ms", "cubic-bezier(0.85, 0, 0.15, 1)");
 </script>
 
 <template>
-  <button :class="hamburgerButtonClasses">
+  <button :class="hamburgerButtonClass">
     <span class="blind">사이드 메뉴 {{ isOpen ? "닫기" : "열기" }}</span>
     <span class="line line--left"></span>
     <span class="line line--mid"></span>
@@ -32,7 +27,7 @@ const transition = computed<{ time: string; easing: string }>(() =>
 <style lang="scss" scoped>
 .HamburgerButton {
   position: fixed;
-  z-index: 120;
+  z-index: var(--hamburger-button-z-index);
   padding: 1rem;
   display: flex;
   flex-direction: column;
@@ -40,17 +35,18 @@ const transition = computed<{ time: string; easing: string }>(() =>
   align-items: center;
   border-radius: 50%;
   border: 1px solid transparent;
-  transition: v-bind("transition.time") v-bind("transition.easing");
+  transition: v-bind("motion.duration") v-bind("motion.easing");
   .line {
     width: 1.8rem;
     height: 0.2rem;
     background-color: var(--bg-900);
     border-radius: 9999px;
-    transition: v-bind("transition.time") v-bind("transition.easing");
+    transition: v-bind("motion.duration") v-bind("motion.easing");
   }
   &--Opened {
     justify-content: center;
     top: 2rem;
+    z-index: calc(var(--nav-z-index) + 1);
     .line {
       position: absolute;
       &--left {

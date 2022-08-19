@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-const props = defineProps<{
+defineProps<{
   iconName: string;
 }>();
 </script>
@@ -10,7 +10,7 @@ const props = defineProps<{
     viewBox="0 0 24 24"
     role="presentation"
   >
-    <title lang="ko">{{ props.iconName }}</title>
+    <title lang="ko">{{ iconName }}</title>
     <slot></slot>
   </svg>
 </template>

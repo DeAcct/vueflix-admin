@@ -1,18 +1,18 @@
 <script lang="ts" setup>
-import { Ref, ref, computed, watch, onMounted, shallowRef } from "vue";
-import VueflixLogo from "./VueflixLogo.vue";
+import { Ref, ref, watch, onMounted, shallowRef } from "vue";
 import { RouteRecordName, useRoute, useRouter } from "vue-router";
+import { storeToRefs } from "pinia";
+import VueflixLogo from "./VueflixLogo.vue";
 import IconBase from "./IconBase.vue";
 import IconDashboard from "./icons/IconDashboard.vue";
 import IconAnime from "./icons/IconAnime.vue";
 import IconRecommendList from "./icons/IconRecommendList.vue";
 import NewProjectIcon from "./icons/NewProjectIcon.vue";
-import { useEventListener } from "../composables/event";
 import IconArrowNext from "./icons/IconArrowNext.vue";
-import { OptionalClassItem } from "../types/Classes";
 import { useNav } from "../store/nav";
-import { useA11y } from "../store/accessibility";
-import { storeToRefs } from "pinia";
+import { useEventListener } from "../composables/event";
+import { useBEMClass, useOptionClass } from "../composables/classNames";
+import { useCSSMotion } from "../composables/motions";
 
 interface SiteLinkItem {
   name: string;
@@ -54,50 +54,20 @@ function routeTo(address: string) {
 }
 
 const viewHeight: Ref<string> = ref("");
-onMounted(() => {
+function setViewHeight() {
   viewHeight.value = `${window.innerHeight}px`;
-});
-useEventListener(window, "resize", () => {
-  viewHeight.value = `${window.innerHeight}px`;
-});
+}
+onMounted(setViewHeight);
+useEventListener(window, "resize", setViewHeight);
 
 const navStore = useNav();
 const { isNavOpen, navWidth } = storeToRefs(navStore);
 function navToggle() {
   navStore.toggleNav();
 }
-const vueflixNavClasses = computed<Array<OptionalClassItem>>(() => [
-  "VueflixNav",
-  { "VueflixNav--Shrinked": !isNavOpen.value },
-]);
-const expandButtonClasses = computed<Array<OptionalClassItem>>(() => [
-  "VueflixNav__ExpandButton",
-  { "VueflixNav__ExpandButton--Shrinked": isNavOpen.value },
-]);
-const adminTextClasses = computed<Array<OptionalClassItem>>(() => [
-  "AdminText",
-  { blind: !isNavOpen.value },
-]);
-const siteLinkClasses = computed<Array<OptionalClassItem>>(() => [
-  "SiteLink",
-  { "SiteLink--Shrinked": !isNavOpen.value },
-]);
-const siteLinkTextClasses = computed<Array<OptionalClassItem>>(() => [
-  "SiteLink__Text",
-  { blind: !isNavOpen.value },
-]);
-const newProjectButtonText = computed<Array<OptionalClassItem>>(() => [
-  "NewProjectButton__Text",
-  { blind: !isNavOpen.value },
-]);
-
-const a11yStore = useA11y();
-const { reduceMotion } = storeToRefs(a11yStore);
-const transition = computed<{ time: string; easing: string }>(() =>
-  reduceMotion.value
-    ? { time: "none", easing: "" }
-    : { time: "150ms", easing: "cubic-bezier(0.85, 0, 0.15, 1)" }
-);
+const vueflixNavClasses = useBEMClass("VueflixNav", "Expanded", isNavOpen);
+const optionalBlind = useOptionClass("blind", isNavOpen, true);
+const motion = useCSSMotion("300ms", "cubic-bezier(0.85, 0, 0.15, 1)");
 </script>
 
 <template>
@@ -106,14 +76,14 @@ const transition = computed<{ time: string; easing: string }>(() =>
       <h1 class="VueflixNav__Logo">
         <RouterLink to="/">
           <VueflixLogo />
-          <span :class="adminTextClasses">어드민</span>
+          <span :class="['AdminText', optionalBlind]">어드민</span>
         </RouterLink>
       </h1>
       <h2 class="VueflixNav__Title inner">사이트 메뉴</h2>
       <ul class="VueflixNav__SiteMenu">
         <li
           :class="[
-            ...siteLinkClasses,
+            'SiteLink',
             { 'SiteLink--Current': siteLink.name === currentAddress },
           ]"
           v-for="siteLink in siteLinks"
@@ -125,7 +95,7 @@ const transition = computed<{ time: string; easing: string }>(() =>
                 <component :is="siteLink.icon" />
               </IconBase>
             </i>
-            <span :class="siteLinkTextClasses">
+            <span :class="['SiteLink__Text', optionalBlind]">
               {{ siteLink.name }}
             </span>
           </button>
@@ -139,10 +109,12 @@ const transition = computed<{ time: string; easing: string }>(() =>
             <NewProjectIcon />
           </IconBase>
         </i>
-        <span :class="newProjectButtonText"> 새 프로젝트 만들기 </span>
+        <span :class="['NewProjectButton__Text', optionalBlind]">
+          새 프로젝트 만들기
+        </span>
       </button>
     </div>
-    <button :class="expandButtonClasses" @click="navToggle">
+    <button class="VueflixNav__ExpandButton" @click="navToggle">
       <i class="icon">
         <IconBase :icon-name="`사이트 메뉴 ${isNavOpen ? '닫기' : '열기'}버튼`">
           <IconArrowNext />
@@ -180,18 +152,20 @@ const transition = computed<{ time: string; easing: string }>(() =>
     width: 100%;
   }
   &__SiteMenu {
+    width: calc(100% - var(--card-padding));
+    transition: v-bind("motion.duration") v-bind("motion.easing");
     .SiteLink {
       display: flex;
-      width: calc(100% - var(--card-padding));
+      width: 100%;
       border-top-right-radius: 9999px;
       border-bottom-right-radius: 9999px;
+      transition: v-bind("motion.duration") v-bind("motion.easing");
       button {
         display: flex;
         align-items: center;
         width: 100%;
         padding: var(--card-padding);
       }
-      transition: v-bind("transition.time") v-bind("transition.easing");
       &__Text {
         font-size: 1.7rem;
         font-weight: 700;
@@ -219,7 +193,7 @@ const transition = computed<{ time: string; easing: string }>(() =>
     align-items: center;
     border-radius: 9999px;
     background-color: var(--theme-500);
-    transition: v-bind("transition.time") v-bind("transition.easing");
+    transition: v-bind("motion.duration") v-bind("motion.easing");
     &__Icon {
       width: 1.8rem;
       height: 1.8rem;
@@ -240,12 +214,12 @@ const transition = computed<{ time: string; easing: string }>(() =>
     &__Logo {
       display: block;
       margin: 0 auto;
-      width: calc(100% - var(--card-padding) * 2);
+      width: 100%;
       height: 14rem;
       padding-top: 2rem;
       a {
         display: flex;
-        justify-content: space-between;
+        justify-content: center;
         align-items: center;
       }
       .VueflixLogo {
@@ -262,40 +236,34 @@ const transition = computed<{ time: string; easing: string }>(() =>
       display: none;
     }
 
-    .SiteLink {
-      height: 6.6rem;
-      button {
-        align-items: center;
-        justify-content: space-between;
-      }
-      &__Icon{
-        margin: 0;
-      }
-      &--Shrinked {
+    &__SiteMenu {
+      width: calc(100% - 0.5rem);
+      .SiteLink {
+        transition: v-bind("motion.duration") v-bind("motion.easing");
+        height: 6.6rem;
         button {
           justify-content: center;
           padding: 0;
         }
-        padding: 0;
-        width: calc(100% - 0.5rem);
+        &__Icon {
+          margin-right: 0;
+        }
       }
     }
 
     .NewProjectButton {
-      width: calc(v-bind(navWidth) - var(--card-padding) * 2);
-      height: 6.6rem;
-      padding: {
-        left: 2rem;
-        right: 2rem;
-      }
-      &__Icon{
+      width: calc(v-bind(navWidth) - 1rem);
+      height: calc(v-bind(navWidth) - 1rem);
+      justify-content: center;
+
+      &__Icon {
         width: 2.4rem;
         height: 2.4rem;
       }
       &__Text {
         white-space: nowrap;
-        opacity: 1;
-        transition: v-bind("transition.time") v-bind("transition.easing");
+        opacity: 0;
+        transition: v-bind("motion.duration") v-bind("motion.easing");
       }
     }
 
@@ -311,35 +279,50 @@ const transition = computed<{ time: string; easing: string }>(() =>
       background-color: var(--bg-100);
       box-shadow: var(--box-shadow);
       border-radius: 50%;
-      transition: left v-bind("transition.time") v-bind("transition.easing");
+      transition: left v-bind("motion.duration") v-bind("motion.easing");
       .icon {
         width: 2.4rem;
         height: 2.4rem;
-        transition: v-bind("transition.time") v-bind("transition.easing");
+        transition: v-bind("motion.duration") v-bind("motion.easing");
         transform: rotateY(0);
-      }
-      &--Shrinked .icon {
-        transform: rotateY(180deg);
       }
     }
 
-    &--Shrinked {
-      .NewProjectButton {
-        width: calc(v-bind(navWidth) - 1rem);
-        height: calc(v-bind(navWidth) - 1rem);
-        justify-content: center;
-        padding: 0;
-        &__Icon {
-          margin-right: 0;
-        }
-        &__Text {
-          opacity: 0;
+    &--Expanded {
+      .VueflixNav__Logo {
+        width: calc(100% - var(--card-padding) * 2);
+        a {
+          justify-content: space-between;
         }
       }
-      .VueflixNav__Logo {
-        width: 100%;
-        a {
-          justify-content: center;
+      .VueflixNav__SiteMenu {
+        width: calc(v-bind(navWidth) - var(--card-padding));
+        .SiteLink {
+          padding: 0 var(--card-padding);
+          button {
+            align-items: center;
+            justify-content: space-between;
+          }
+          .SiteLink__Icon {
+            margin: 0;
+          }
+        }
+      }
+      .NewProjectButton {
+        width: calc(v-bind(navWidth) - var(--card-padding) * 2);
+        height: 6.6rem;
+
+        padding: 0;
+        &__Text {
+          opacity: 1;
+        }
+        &__icon {
+          margin-right: 1rem;
+        }
+      }
+      .VueflixNav__ExpandButton {
+        .icon {
+          transform: rotateY(180deg);
         }
       }
     }

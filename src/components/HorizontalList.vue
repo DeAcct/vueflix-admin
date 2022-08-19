@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { ref, Ref, computed, onMounted } from "vue";
+import { ref, Ref, computed, onMounted, toRef } from "vue";
 import { useEventListener } from "../composables/event";
 import type { ListElementRoot } from "../types/ElementRoot";
-import type { OptionalClass } from "../types/Classes";
+import { useBEMClass } from "../composables/classNames";
 
 interface HorizontalListProps {
   rootType: ListElementRoot;
@@ -49,18 +49,21 @@ function setScrollState(e: Event) {
 
 useEventListener(window, "resize", setScrollState);
 
-const bodyClasses = computed<Array<string | OptionalClass>>(() => [
-  "HorizontalList__Body",
+const bodyClasses = computed<Array<string>>(() => [
   `HorizontalList__Body--${scrollState.value}`,
-  { "HorizontalList__Body--Wrap": horizontalListProps.wrap },
 ]);
+const isBodyWrapped = useBEMClass(
+  "HorizontalList__Body",
+  "Wrap",
+  toRef(horizontalListProps, "wrap")
+);
 </script>
 
 <template>
   <div class="HorizontalList">
     <component
       :is="rootType"
-      :class="bodyClasses"
+      :class="[...bodyClasses, ...isBodyWrapped]"
       @scroll="setScrollState"
       @touchstart="setScrollState"
       ref="$root"
@@ -84,7 +87,7 @@ const bodyClasses = computed<Array<string | OptionalClass>>(() => [
       height: 100%;
       position: absolute;
       top: 0;
-      z-index: 10;
+      z-index: var(--router-view-content-z-index);
       opacity: 0;
     }
     &::before {

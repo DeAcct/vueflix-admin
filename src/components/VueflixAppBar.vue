@@ -1,12 +1,12 @@
 <script lang="ts" setup>
+import { computed, ref, Ref } from "vue";
+import { storeToRefs } from "pinia";
+import HamburgerButton from "./HamburgerButton.vue";
 import SearchBar from "./SearchBar.vue";
 import VueflixNav from "./VueflixNav.vue";
-import { computed, ref, Ref } from "vue";
-import HamburgerButton from "./HamburgerButton.vue";
-import { useEventListener } from "../composables/event";
 import { useNav } from "../store/nav";
-import { storeToRefs } from "pinia";
-import { useA11y } from "../store/accessibility";
+import { useEventListener } from "../composables/event";
+import { useCSSMotion } from "../composables/motions";
 
 const appBarProps = defineProps<{
   expanded: boolean;
@@ -45,13 +45,7 @@ useEventListener(window, "resize", () => {
   }
 });
 
-const a11yStore = useA11y();
-const { reduceMotion } = storeToRefs(a11yStore);
-const transition = computed<{ time: string; easing: string }>(() =>
-  reduceMotion.value
-    ? { time: "none", easing: "" }
-    : { time: "150ms", easing: "cubic-bezier(0.85, 0, 0.15, 1)" }
-);
+const motion = useCSSMotion("300ms", "cubic-bezier(0.85, 0, 0.15, 1)");
 </script>
 
 <template>
@@ -67,11 +61,8 @@ const transition = computed<{ time: string; easing: string }>(() =>
           <slot name="activity-name" />
         </strong>
       </div>
-      <div class="col-right">
-        <SearchBar v-if="device !== 'mobile'" />
-      </div>
     </div>
-    <SearchBar v-if="expanded && device === 'mobile'" />
+    <SearchBar v-if="expanded" />
     <VueflixNav />
   </header>
 </template>
@@ -85,7 +76,7 @@ const transition = computed<{ time: string; easing: string }>(() =>
   justify-content: center;
   background: var(--header-bg);
   backdrop-filter: blur(10px);
-  transition: v-bind("transition.time") v-bind("transition.easing");
+  transition: v-bind("motion.duration") v-bind("motion.easing");
 
   &__ActivityName {
     font-size: 2rem;
@@ -109,11 +100,12 @@ const transition = computed<{ time: string; easing: string }>(() =>
     }
   }
   .SearchBar {
+    width: 100%;
     height: 4.6rem;
   }
   &--Expanded {
     backdrop-filter: unset;
-    height: var(--header-height);
+    height: var(--app-bar-height);
     padding: {
       top: 2rem;
       bottom: 2rem;
@@ -131,10 +123,10 @@ const transition = computed<{ time: string; easing: string }>(() =>
 
   .VueflixNav {
     position: fixed;
-    z-index: 100;
+    z-index: var(--nav-z-index);
     left: -100%;
     top: 0;
-    transition: v-bind("transition.time") v-bind("transition.easing");
+    transition: v-bind("motion.duration") v-bind("motion.easing");
     transform: translateX(v-bind(transformLeft));
   }
 }
@@ -143,8 +135,12 @@ const transition = computed<{ time: string; easing: string }>(() =>
   .VueflixAppBar {
     margin-left: v-bind(navWidth);
     width: calc(100% - v-bind(navWidth));
+    flex-direction: row;
     &__ActivityName {
       margin: 0;
+    }
+    .SearchBar {
+      width: 50rem;
     }
     .VueflixNav {
       left: 0;
