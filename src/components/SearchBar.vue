@@ -16,7 +16,7 @@ function setRawTag(e: Event) {
 
 const inputFocused: Ref<boolean> = ref(false);
 function onFocusIn() {
-  tagOverayOpen.value = true;
+  tagOverayOpen();
   inputFocused.value = true;
 }
 function onFocusOut() {
@@ -77,19 +77,19 @@ function search() {
     splitTags.title = [];
     splitTags.director = [];
     inputFocused.value = false;
-    tagOverayOpen.value = false;
+    tagOverayClose();
   } else {
     inputFocused.value = true;
   }
 }
 
-const tagOverayOpen: Ref<boolean> = ref(false);
-function tagOverayClose() {
-  tagOverayOpen.value = false;
+const tagOverayVisible: Ref<boolean> = ref(false);
+function tagOverayOpen() {
+  tagOverayVisible.value = true;
 }
-const tagOverayVisible = computed<boolean>(
-  () => inputFocused.value || tagOverayOpen.value
-);
+function tagOverayClose() {
+  tagOverayVisible.value = false;
+}
 const tagOverayClasses = useBEMClass("TagOveray", "Visible", tagOverayVisible);
 const backdropCloseButtonClasses = useBEMClass(
   "SearchBar__BackdropCloseButton",
@@ -101,8 +101,12 @@ const motion = useCSSMotion("150ms", "cubic-bezier(0.85, 0, 0.15, 1)");
 
 <template>
   <form :class="searchbarClasses" @submit.prevent="search">
-    <div class="Body" @click="clickLabel">
-      <button class="SearchBar__SubmitButton" type="submit" @click="search">
+    <div class="Body" @click.stop="clickLabel">
+      <button
+        class="SearchBar__SubmitButton"
+        type="submit"
+        @click.stop="search"
+      >
         <IconBase icon-name="검색 아이콘">
           <IconSearch />
         </IconBase>
