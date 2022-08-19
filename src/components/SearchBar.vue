@@ -77,6 +77,7 @@ function search() {
     splitTags.title = [];
     splitTags.director = [];
     inputFocused.value = false;
+    tagOverayOpen.value = false;
   } else {
     inputFocused.value = true;
   }
