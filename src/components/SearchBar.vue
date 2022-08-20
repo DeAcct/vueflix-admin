@@ -11,10 +11,12 @@ import type { TagType } from "../types/SearchTagType";
 const rawTag: Ref<string> = ref("");
 const router = useRouter();
 function setRawTag(e: Event) {
-  rawTag.value = (e.target as HTMLInputElement).value;
+  rawTag.value = (e.target as HTMLInputElement).value.toLowerCase();
 }
 watch(rawTag, () => {
-  if (rawTag.value.length !== 0) {
+  //입력이 시작되었을 때
+  if (rawTag.value.length === 1) {
+    //태그오버레이를 활성화한다
     tagOverayOpen();
   }
 });
@@ -38,7 +40,7 @@ const placeholderClasses = useBEMClass(
 
 const tagType = new RegExp("^(keyword|company|title|director)");
 const isValidTagType = computed<boolean>(() => tagType.test(rawTag.value));
-const currentTyping = computed<string>(() => rawTag.value.split(":")[0]);
+const currentTyping = computed<Array<string>>(() => rawTag.value.split(":"));
 const $Input: Ref<HTMLInputElement | null> = ref(null);
 function clickLabel() {
   if ($Input.value) {
@@ -46,7 +48,7 @@ function clickLabel() {
   }
 }
 
-const splitTags = reactive<Record<TagType, Array<string>>>({
+const splittedTags = reactive<Record<TagType, Array<string>>>({
   keyword: [],
   company: [],
   title: [],
@@ -54,38 +56,37 @@ const splitTags = reactive<Record<TagType, Array<string>>>({
 });
 const searchAble = computed<boolean>(
   () =>
-    splitTags.keyword.length !== 0 ||
-    splitTags.company.length !== 0 ||
-    splitTags.title.length !== 0 ||
-    splitTags.director.length !== 0
+    splittedTags.keyword.length !== 0 ||
+    splittedTags.company.length !== 0 ||
+    splittedTags.title.length !== 0 ||
+    splittedTags.director.length !== 0
 );
-function tagSplit() {
+function setSplittedTags() {
   const [type, value] = rawTag.value.split(":") as [TagType, string];
   if (!value || !isValidTagType.value) {
     return;
   }
   const underbarReplacedValue = value.replace("_", " ");
-  if (splitTags[type].includes(underbarReplacedValue)) {
+  if (splittedTags[type].includes(underbarReplacedValue)) {
     return;
   }
-  splitTags[type].push(underbarReplacedValue);
+  splittedTags[type].push(underbarReplacedValue);
   rawTag.value = "";
 }
 function deleteTag(tagName: TagType, value: string) {
-  splitTags[tagName] = splitTags[tagName].filter((item) => value !== item);
+  splittedTags[tagName] = splittedTags[tagName].filter(
+    (item) => value !== item
+  );
 }
 function search() {
-  if (searchAble.value) {
-    router.push({ name: "검색", query: splitTags });
-    splitTags.keyword = [];
-    splitTags.company = [];
-    splitTags.title = [];
-    splitTags.director = [];
-    inputFocused.value = false;
-    tagOverayClose();
-  } else {
-    inputFocused.value = true;
-  }
+  router.push({ name: "검색", query: splittedTags });
+  splittedTags.keyword = [];
+  splittedTags.company = [];
+  splittedTags.title = [];
+  splittedTags.director = [];
+  inputFocused.value = false;
+  $Input.value?.blur();
+  tagOverayClose();
 }
 
 const tagOverayVisible: Ref<boolean> = ref(false);
@@ -106,11 +107,11 @@ const motion = useCSSMotion("150ms", "cubic-bezier(0.85, 0, 0.15, 1)");
 
 <template>
   <form :class="searchbarClasses" @submit.prevent="search">
-    <div class="Body" @click.stop="clickLabel">
+    <div class="Body" @click="clickLabel">
       <button
         class="SearchBar__SubmitButton"
         type="submit"
-        @click.stop="search"
+        :disabled="!searchAble"
       >
         <IconBase icon-name="검색 아이콘">
           <IconSearch />
@@ -121,30 +122,43 @@ const motion = useCSSMotion("150ms", "cubic-bezier(0.85, 0, 0.15, 1)");
         @input="setRawTag"
         @focusin="onFocusIn"
         @focusout="onFocusOut"
-        @keydown.prevent.space="tagSplit"
+        @keydown.prevent.space="setSplittedTags"
         @keydown.prevent.tab
         :value="rawTag"
         ref="$Input"
       />
-      <span :class="placeholderClasses">
-        검색할 태그를 입력하세요 [태그종류:검색어]
-      </span>
+      <button
+        class="SearchBar__TagAddButton touch-device"
+        type="button"
+        @click="setSplittedTags"
+        v-if="tagOverayVisible"
+        :disabled="!currentTyping[1] || !isValidTagType"
+      >
+        태그 추가
+      </button>
+      <span :class="placeholderClasses"> 검색할 태그를 입력하세요 </span>
     </div>
 
     <TagOveray
       :class="tagOverayClasses"
-      :current-typing="currentTyping"
-      :split-tags="splitTags"
+      :current-typing="currentTyping[0]"
+      :split-tags="splittedTags"
       @delete-tag="deleteTag"
       @tag-overay-close="tagOverayClose"
     >
       <template #title> 입력된 태그 </template>
       <template #guide-text>
         <ul class="TagOveray__GuideText">
-          <li class="guide">SpaceBar를 누르면 여기에 나타납니다.</li>
-          <li class="guide">Enter를 누르면 검색합니다.</li>
-          <li class="guide">_(언더바)는 띄어쓰기로 변환됩니다.</li>
-          <li class="guide">탭키는 사용할 수 없습니다.</li>
+          <li class="guide pointer-device">
+            <span>SpaceBar를 누르면 여기에 나타납니다.</span>
+          </li>
+          <li class="guide pointer-device">
+            <span>Enter를 누르면 검색합니다.</span>
+          </li>
+          <li class="guide pointer-device">
+            <span> Tab은 사용할 수 없습니다.</span>
+          </li>
+          <li class="guide"><span>_(언더바)는 띄어쓰기로 변환됩니다.</span></li>
         </ul>
       </template>
     </TagOveray>
@@ -170,13 +184,14 @@ const motion = useCSSMotion("150ms", "cubic-bezier(0.85, 0, 0.15, 1)");
     z-index: var(--search-bar-body-z-index);
     top: 0;
     width: 100%;
+    height: 100%;
     display: flex;
     align-items: center;
     background-color: var(--bg-100);
     box-shadow: var(--box-shadow);
     border-radius: 9999px;
     border: 1px solid transparent;
-    padding: 1rem var(--card-padding);
+    padding: 0.5rem var(--card-padding);
     cursor: text;
   }
 
@@ -204,6 +219,22 @@ const motion = useCSSMotion("150ms", "cubic-bezier(0.85, 0, 0.15, 1)");
     width: calc(100% - 3.4rem);
     font-weight: 500;
   }
+  &__TagAddButton {
+    position: absolute;
+    right: 0.5rem;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    height: 3.6rem;
+    padding: 0 1.5rem;
+    border-radius: 9999px;
+    background-color: var(--theme-500);
+    color: #fff;
+    font-weight: 500;
+    &:disabled {
+      background-color: var(--bg-700);
+    }
+  }
 
   .TagOveray {
     &__GuideText {
@@ -226,7 +257,7 @@ const motion = useCSSMotion("150ms", "cubic-bezier(0.85, 0, 0.15, 1)");
 
   &__BackdropCloseButton {
     position: fixed;
-    z-index: var(--search-bar-backdrop-close-button-z-index);
+    z-index: var(--backdrop-close-button-z-index);
     visibility: hidden;
     opacity: 0;
     top: 0;
