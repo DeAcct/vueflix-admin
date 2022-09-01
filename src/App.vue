@@ -41,7 +41,7 @@ console.clear();
 </script>
 
 <template>
-  <VueflixAppBar :expanded="!isExpanded">
+  <VueflixAppBar :expanded="!isExpanded" v-if="route.meta.header">
     <template #activity-name>
       {{ route.params.title ? route.params.title : route.name }}
     </template>

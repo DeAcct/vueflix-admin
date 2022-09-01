@@ -71,12 +71,12 @@ const motion = useCSSMotion("300ms", "cubic-bezier(0.85, 0, 0.15, 1)");
 .VueflixAppBar {
   width: 100%;
   display: flex;
-  height: 6rem;
+  height: 7.6rem;
   flex-direction: column;
   justify-content: center;
   background: var(--header-bg);
   backdrop-filter: blur(10px);
-  transition: v-bind("motion.duration") v-bind("motion.easing");
+  transition: height v-bind("motion.duration") v-bind("motion.easing");
 
   &__ActivityName {
     font-size: 2rem;

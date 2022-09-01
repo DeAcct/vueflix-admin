@@ -41,7 +41,7 @@ const motion = useCSSMotion("300ms", "cubic-bezier(0.85, 0, 0.15, 1)");
     height: 0.2rem;
     background-color: var(--bg-900);
     border-radius: 9999px;
-    transition: v-bind("motion.duration") v-bind("motion.easing");
+    transition: transform v-bind("motion.duration") v-bind("motion.easing");
   }
   &--Opened {
     justify-content: center;

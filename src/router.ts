@@ -7,6 +7,7 @@ const routes = [
     component: () => import("@/views/Dashboard.vue"),
     meta: {
       title: "뷰플릭스 어드민 - 대시보드",
+      header: true,
     },
   },
   {
@@ -15,6 +16,7 @@ const routes = [
     component: () => import("@/views/Anime.vue"),
     meta: {
       title: "뷰플릭스 어드민 - 애니메이션",
+      header: true,
     },
   },
   {
@@ -31,13 +33,25 @@ const routes = [
     component: () => import("@/views/Search.vue"),
     meta: {
       title: "검색",
+      header: true,
     },
-    props: true,
   },
   {
     path: "/anime-detail/:title",
     name: "상세페이지",
     component: () => import("@/views/AnimeDetail.vue"),
+    meta: {
+      header: true,
+    },
+  },
+  {
+    path: "/login",
+    name: "로그인",
+    component: () => import("@/views/Login.vue"),
+    meta: {
+      title: "로그인",
+      header: false,
+    },
   },
 ];
 
