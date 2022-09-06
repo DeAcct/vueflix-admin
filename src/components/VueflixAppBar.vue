@@ -133,6 +133,8 @@ const motion = useCSSMotion("300ms", "cubic-bezier(0.85, 0, 0.15, 1)");
 
 @media screen and (min-width: 1024px) {
   .VueflixAppBar {
+    transition: margin-left v-bind("motion.duration") v-bind("motion.easing"),
+      width v-bind("motion.duration") v-bind("motion.easing");
     margin-left: v-bind(navWidth);
     width: calc(100% - v-bind(navWidth));
     flex-direction: row;

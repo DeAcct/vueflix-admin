@@ -40,6 +40,9 @@ const siteLinks: Ref<Array<SiteLinkItem>> = ref([
 const route = useRoute();
 const router = useRouter();
 const currentAddress: Ref<RouteRecordName> = ref("");
+onMounted(() => {
+  currentAddress.value = route.name ? route.name : "";
+});
 watch(
   () => route.name,
   () => {
@@ -311,8 +314,7 @@ const motion = useCSSMotion("300ms", "cubic-bezier(0.85, 0, 0.15, 1)");
       .NewProjectButton {
         width: calc(v-bind(navWidth) - var(--card-padding) * 2);
         height: 6.6rem;
-
-        padding: 0;
+        justify-content: space-between;
         &__Text {
           opacity: 1;
         }

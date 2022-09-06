@@ -4,6 +4,7 @@ import {
   useFirestoreDocs,
   useFirestoreSingleDoc,
 } from "../composables/firebase";
+import { useOverflow } from "../utility/number";
 import VueflixSection from "@/components/VueflixSection.vue";
 import AnimeListCard from "@/components/AnimeListCard.vue";
 import IconBase from "@/components/IconBase.vue";
@@ -12,7 +13,7 @@ import RecommendListCard from "@/components/RecommendListCard.vue";
 import type { AnimeDoc } from "../types/AnimeDoc";
 import type { Statistic } from "../types/Statistics";
 import type { RecommendListDoc } from "../types/RecommendListDoc";
-import { computed } from "vue";
+import StyledButton from "../components/StyledButton.vue";
 
 const { docs: animes } = useFirestoreDocs<AnimeDoc>(
   "anime",
@@ -23,16 +24,6 @@ const { singleDoc: statistics } = useFirestoreSingleDoc<Statistic>(
   "statistics",
   "statistics"
 );
-const numbersofAnime = computed<number | string>(() => {
-  if (statistics.value) {
-    if (statistics.value.numbersofAnime > 999) {
-      return "999+";
-    }
-    return statistics.value.numbersofAnime;
-  } else {
-    return 0;
-  }
-});
 
 const { docs: recommendLists } = useFirestoreDocs<RecommendListDoc>(
   "recommend",
@@ -44,16 +35,22 @@ const { docs: recommendLists } = useFirestoreDocs<RecommendListDoc>(
 <template>
   <div class="Dashboard">
     <div class="flex-wrap">
-      <VueflixSection>
-        <template #title>애니메이션</template>
+      <VueflixSection :title-center="false">
+        <template #title>
+          <h2 class="VueflixSection__Title">애니메이션</h2>
+        </template>
         <template #counter>
-          <p class="Counter">{{ numbersofAnime }}</p>
+          <p class="VueflixSection__Counter">
+            {{ useOverflow(statistics?.numbersofAnime) }}
+          </p>
         </template>
         <template #description>
-          <p class="Description">가장 최근 등록된 3개의 애니메이션입니다.</p>
+          <p class="VueflixSection__Description">
+            가장 최근 등록된 3개의 애니메이션입니다.
+          </p>
         </template>
         <template #content>
-          <ul class="Contents Contents--Animes">
+          <ul class="VueflixSection__Contents Contents--Animes">
             <AnimeListCard
               v-for="doc in animes"
               :anime-name="doc.name"
@@ -67,37 +64,58 @@ const { docs: recommendLists } = useFirestoreDocs<RecommendListDoc>(
               <template #ani-name>{{ doc.name }}</template>
             </AnimeListCard>
           </ul>
-          <RouterLink to="/anime" class="ViewMoreBtn">
-            더보기
-            <i class="ViewMoreBtn__Icon">
+          <StyledButton
+            icon
+            icon-position="right"
+            root="RouterLink"
+            to="/anime"
+            class="ViewMoreBtn"
+          >
+            <template #Icon>
               <IconBase icon-name="화살표">
                 <IconArrowNext />
               </IconBase>
-            </i>
-          </RouterLink>
+            </template>
+            <template #Text>더보기</template>
+          </StyledButton>
         </template>
       </VueflixSection>
-      <VueflixSection>
-        <template #title>추천 목록</template>
+      <VueflixSection :title-center="false">
+        <template #title>
+          <h2 class="VueflixSection__Title">추천 목록</h2>
+        </template>
+        <template #counter>
+          <p class="VueflixSection__Counter">
+            {{ useOverflow(statistics?.numbersofRecommend) }}
+          </p></template
+        >
         <template #description>
-          <p class="Description">가장 최근 등록된 3개의 추천 목록입니다.</p>
+          <p class="VueflixSection__Description">
+            가장 최근 등록된 3개의 추천 목록입니다.
+          </p>
         </template>
         <template #content>
-          <ul class="Contents Contents--Recommend">
+          <ul class="VueflixSection__Contents Contents--Recommend">
             <RecommendListCard
               v-for="recommendList in recommendLists"
               root="li"
               :recommend-list="recommendList"
             />
           </ul>
-          <RouterLink to="/recommend-list" class="ViewMoreBtn">
-            더보기
-            <i class="ViewMoreBtn__Icon">
+          <StyledButton
+            icon
+            icon-position="right"
+            root="RouterLink"
+            to="/recommend-list"
+            class="ViewMoreBtn"
+          >
+            <template #Icon>
               <IconBase icon-name="화살표">
                 <IconArrowNext />
               </IconBase>
-            </i>
-          </RouterLink>
+            </template>
+            <template #Text>더보기</template>
+          </StyledButton>
         </template>
       </VueflixSection>
     </div>
@@ -111,37 +129,30 @@ const { docs: recommendLists } = useFirestoreDocs<RecommendListDoc>(
     flex-direction: column;
     .VueflixSection {
       margin-bottom: 2.5rem;
-    }
-    .Counter {
-      font-size: 1.5rem;
-    }
-    .Description {
-      font-size: 1.4rem;
-      margin-top: 0.7rem;
-    }
-    .Contents {
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      .AnimeListCard {
-        border-bottom: 1px solid var(--bg-200);
+      &__Title {
+        font-size: 1.7rem;
+      }
+      &__Counter {
+        font-size: 1.5rem;
+      }
+      &__Description {
+        font-size: 1.4rem;
+        margin-top: 0.7rem;
+      }
+      &__Contents {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        .AnimeListCard {
+          border-bottom: 1px solid var(--bg-200);
+        }
       }
     }
+
     .ViewMoreBtn {
-      width: 12rem;
-      padding: 0.75rem 1.5rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-radius: 9999px;
       background-color: var(--bg-200);
-      font-size: 1.5rem;
-      font-weight: 500;
-      &__Icon {
-        width: 1.8rem;
-        height: 1.8rem;
-      }
       margin: 1.5rem 0;
+      align-self: center;
     }
   }
 }

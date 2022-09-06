@@ -1,10 +1,22 @@
+<script lang="ts" setup>
+import { toRef } from "vue";
+import { useOptionClass } from "../composables/classNames";
+
+const vueflixSectionProps = defineProps<{
+  titleCenter: boolean;
+}>();
+
+const centered = useOptionClass(
+  "centered",
+  toRef(vueflixSectionProps, "titleCenter")
+);
+</script>
+
 <template>
   <section class="VueflixSection">
     <div class="headtext">
-      <div class="row-top">
-        <h2 class="VueflixSection__Title">
-          <slot name="title" />
-        </h2>
+      <div :class="['row-top', centered]">
+        <slot name="title" />
         <slot name="counter" />
       </div>
       <slot name="description" />
@@ -28,11 +40,12 @@
       :not(:last-child) {
         margin-right: 1rem;
       }
+      &.centered {
+        justify-content: center;
+      }
     }
   }
-  &__Title {
-    font-size: 1.7rem;
-  }
+
   &__Contents {
     display: flex;
     flex-direction: column;

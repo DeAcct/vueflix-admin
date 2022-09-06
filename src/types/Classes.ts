@@ -9,4 +9,4 @@ export type OptionalClassItem = string | OptionClass;
 export type BlockElement = `${string}__${string}`;
 export type Block = string;
 
-export type BEM = Ref<Array<BlockElement | Block | OptionClass>>;
+export type BEM = Array<BlockElement | Block | OptionClass>;

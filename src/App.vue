@@ -36,7 +36,6 @@ useEventListener(window, "scroll", () => {
 });
 
 const transition = useCSSMotion("300ms", "cubic-bezier(0.85, 0, 0.15, 1)");
-
 console.clear();
 </script>
 
