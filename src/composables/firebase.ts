@@ -13,6 +13,12 @@ import {
   ref as storageRef,
   getDownloadURL,
 } from "firebase/storage";
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  User,
+  UserCredential,
+} from "firebase/auth";
 
 import { ref, Ref, watchEffect } from "vue";
 import type { ImageFileName } from "../types/MediaExtension";
@@ -93,4 +99,21 @@ export function useStorageMedia(fileName: ImageFileName) {
   });
 
   return { imgURL, error };
+}
+
+export async function useFirebaseEmailLogin(id: Ref<string>, pw: Ref<string>) {
+  const auth = getAuth();
+  const isLoading: Ref<boolean> = ref(false);
+  const isFailed: Ref<boolean> = ref(true);
+  try {
+    await signInWithEmailAndPassword(auth, id.value, pw.value);
+  } catch {
+    console.error("에러");
+    isFailed.value = true;
+  }
+  isLoading.value = false;
+  return {
+    isLoading,
+    isFailed,
+  };
 }

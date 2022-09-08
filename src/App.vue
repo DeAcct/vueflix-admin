@@ -3,6 +3,7 @@ import { ref, Ref, computed, watch } from "vue";
 import { useRoute } from "vue-router";
 import { storeToRefs } from "pinia";
 import VueflixAppBar from "@/components/VueflixAppBar.vue";
+import AuthProvider from "@/components/AuthProvider.vue";
 import { useNav } from "./store/nav";
 import { useEventListener } from "./composables/event";
 import { useCSSMotion } from "./composables/motions";
@@ -40,16 +41,18 @@ console.clear();
 </script>
 
 <template>
-  <VueflixAppBar :expanded="!isExpanded" v-if="route.meta.header">
-    <template #activity-name>
-      {{ route.params.title ? route.params.title : route.name }}
-    </template>
-  </VueflixAppBar>
-  <RouterView v-slot="{ Component }" class="RouterView">
-    <Transition name="fade">
-      <component :is="Component" :key="route.name"></component>
-    </Transition>
-  </RouterView>
+  <AuthProvider>
+    <VueflixAppBar :expanded="!isExpanded" v-if="route.meta.header">
+      <template #activity-name>
+        {{ route.params.title ? route.params.title : route.name }}
+      </template>
+    </VueflixAppBar>
+    <RouterView v-slot="{ Component }" class="RouterView">
+      <Transition name="fade">
+        <component :is="Component" :key="route.name"></component>
+      </Transition>
+    </RouterView>
+  </AuthProvider>
 </template>
 
 <style lang="scss" scoped>

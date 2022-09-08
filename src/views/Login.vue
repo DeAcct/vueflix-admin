@@ -1,24 +1,32 @@
 <script lang="ts" setup>
-import VueflixLogo from "@/components/VueflixLogo.vue";
+import { computed, ref, Ref } from "vue";
 import { useCSSMotion } from "../composables/motions";
-import TextInput from "../components/TextInput.vue";
-import { ref, Ref } from "vue";
-import StyledButton from "../components/StyledButton.vue";
+import StyledButton from "@/components/StyledButton.vue";
+import TextInput from "@/components/TextInput.vue";
+import VueflixLogo from "@/components/VueflixLogo.vue";
+import { useFirebaseEmailLogin } from "../composables/firebase";
 
 const motion = useCSSMotion("1s", "cubic-bezier(0.85, 0, 0.15, 1)");
+
 const id: Ref<string> = ref("");
 const pw: Ref<string> = ref("");
+const isIDBlank = computed<boolean>(() => id.value.length === 0);
+const isPWBlank = computed<boolean>(() => pw.value.length === 0);
+async function onLogin() {
+  const { isLoading, isFailed } = await useFirebaseEmailLogin(id, pw);
+  console.log(isLoading, isFailed);
+}
 </script>
 
 <template>
   <div class="Login">
     <header class="Login__Header">
       <h1 class="Logo">
-        <VueflixLogo class="Logo__Img"></VueflixLogo>
+        <VueflixLogo class="Logo__Img" />
         <span class="Logo__Text">관리자</span>
       </h1>
     </header>
-    <form class="Login__Form">
+    <form class="Login__Form" @submit.prevent="onLogin">
       <h2 class="Login__Title">로그인</h2>
       <div class="Input">
         <TextInput type="text" v-model:input-value="id">
@@ -30,8 +38,9 @@ const pw: Ref<string> = ref("");
       </div>
       <StyledButton
         root="button"
-        type="button"
+        type="submit"
         :icon="false"
+        :disabled="isIDBlank || isPWBlank"
         class="Login__Button"
       >
         <template #Text>로그인</template>
@@ -55,7 +64,7 @@ const pw: Ref<string> = ref("");
   }
   &__Header {
     width: 100%;
-    height: 100vw;
+    height: min(100vw, 50vh);
     display: flex;
     justify-content: center;
     align-items: center;

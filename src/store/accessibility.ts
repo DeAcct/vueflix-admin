@@ -1,6 +1,5 @@
 import { defineStore } from "pinia";
 import { useLocalstorage } from "../composables/localstorage";
-import { computed } from "vue";
 
 export const useA11y = defineStore("a11y", () => {
   // 깜빡이거나 반짝이는 애니메이션에 예민한 사용자를 위해 모션을 끌 수 있도록 한다.
