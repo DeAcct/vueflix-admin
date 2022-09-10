@@ -5,7 +5,7 @@ import StyledButton from "@/components/StyledButton.vue";
 import TextInput from "@/components/TextInput.vue";
 import VueflixLogo from "@/components/VueflixLogo.vue";
 import { useRouter } from "vue-router";
-import Immersive from "../Layout/Immersive.vue";
+import Immersive from "../layouts/Immersive.vue";
 
 const id: Ref<string> = ref("");
 const pw: Ref<string> = ref("");

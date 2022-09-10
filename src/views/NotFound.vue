@@ -3,7 +3,7 @@ import { useRouter } from "vue-router";
 import NotFoundAqua from "../assets/NotFoundAqua.a487baa1.svg";
 import StyledButton from "../components/StyledButton.vue";
 import { useAuth } from "../store/auth";
-import Immersive from "../Layout/Immersive.vue";
+import Immersive from "../layouts/Immersive.vue";
 
 const auth = useAuth();
 const router = useRouter();
