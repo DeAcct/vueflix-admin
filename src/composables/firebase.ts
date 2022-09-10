@@ -16,6 +16,7 @@ import {
 import {
   getAuth,
   signInWithEmailAndPassword,
+  signOut,
   User,
   UserCredential,
 } from "firebase/auth";
@@ -103,17 +104,26 @@ export function useStorageMedia(fileName: ImageFileName) {
 
 export async function useFirebaseEmailLogin(id: Ref<string>, pw: Ref<string>) {
   const auth = getAuth();
-  const isLoading: Ref<boolean> = ref(false);
-  const isFailed: Ref<boolean> = ref(true);
+  const isFailed: Ref<boolean> = ref(false);
   try {
     await signInWithEmailAndPassword(auth, id.value, pw.value);
   } catch {
-    console.error("에러");
     isFailed.value = true;
   }
-  isLoading.value = false;
   return {
-    isLoading,
+    isFailed,
+  };
+}
+
+export async function firebaseLogout() {
+  const auth = getAuth();
+  const isFailed: Ref<boolean> = ref(false);
+  try {
+    await signOut(auth);
+  } catch {
+    isFailed.value = true;
+  }
+  return {
     isFailed,
   };
 }

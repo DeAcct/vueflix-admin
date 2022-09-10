@@ -13,6 +13,8 @@ import { useNav } from "../store/nav";
 import { useEventListener } from "../composables/event";
 import { useBEMClass, useOptionClass } from "../composables/classNames";
 import { useCSSMotion } from "../composables/motions";
+import StyledButton from "./StyledButton.vue";
+import { firebaseLogout } from "../composables/firebase";
 
 interface SiteLinkItem {
   name: string;
@@ -42,6 +44,7 @@ const router = useRouter();
 const currentAddress: Ref<RouteRecordName> = ref("");
 onMounted(() => {
   currentAddress.value = route.name ? route.name : "";
+  setViewHeight();
 });
 watch(
   () => route.name,
@@ -60,7 +63,6 @@ const viewHeight: Ref<string> = ref("");
 function setViewHeight() {
   viewHeight.value = `${window.innerHeight}px`;
 }
-onMounted(setViewHeight);
 useEventListener(window, "resize", setViewHeight);
 
 const navStore = useNav();
@@ -71,6 +73,12 @@ function navToggle() {
 const vueflixNavClasses = useBEMClass("VueflixNav", "Expanded", isNavOpen);
 const optionalBlind = useOptionClass("blind", isNavOpen, true);
 const motion = useCSSMotion("300ms", "cubic-bezier(0.85, 0, 0.15, 1)");
+
+async function onLogout() {
+  await firebaseLogout();
+  navStore.closeNav();
+  router.push("/login");
+}
 </script>
 
 <template>
@@ -104,6 +112,17 @@ const motion = useCSSMotion("300ms", "cubic-bezier(0.85, 0, 0.15, 1)");
           </button>
         </li>
       </ul>
+      <div class="VueflixNav__LogoutArea inner">
+        <StyledButton
+          root="button"
+          role="link"
+          :icon="false"
+          type="button"
+          @click="onLogout"
+        >
+          <template #Text>로그아웃</template>
+        </StyledButton>
+      </div>
     </div>
     <div class="row-bottom">
       <button class="NewProjectButton" @click="routeTo('#')">
@@ -132,7 +151,7 @@ const motion = useCSSMotion("300ms", "cubic-bezier(0.85, 0, 0.15, 1)");
 
 <style lang="scss" scoped>
 .VueflixNav {
-  background-color: var(--text-100);
+  background-color: var(--text-200);
   width: 100vw;
   height: v-bind(viewHeight);
   display: flex;
@@ -144,9 +163,10 @@ const motion = useCSSMotion("300ms", "cubic-bezier(0.85, 0, 0.15, 1)");
   }
   &__Title {
     font-size: 2rem;
-    margin-top: 7.6rem;
+    padding-top: 7.6rem;
     font-weight: 900;
-    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    background-color: var(--text-100);
   }
   .row-bottom {
     display: flex;
@@ -155,11 +175,13 @@ const motion = useCSSMotion("300ms", "cubic-bezier(0.85, 0, 0.15, 1)");
     width: 100%;
   }
   &__SiteMenu {
-    width: calc(100% - var(--card-padding));
+    padding-bottom: calc(var(--card-padding));
+    background-color: var(--text-100);
+    border-bottom-right-radius: 2.3rem;
     transition: v-bind("motion.duration") v-bind("motion.easing");
     .SiteLink {
       display: flex;
-      width: 100%;
+      width: calc(100% - var(--card-padding) * 2);
       border-top-right-radius: 9999px;
       border-bottom-right-radius: 9999px;
       transition: v-bind("motion.duration") v-bind("motion.easing");
@@ -182,6 +204,15 @@ const motion = useCSSMotion("300ms", "cubic-bezier(0.85, 0, 0.15, 1)");
       &--Current {
         background-color: var(--text-300);
       }
+    }
+  }
+  &__LogoutArea {
+    padding: {
+      top: 1rem;
+      bottom: 1rem;
+    }
+    .StyledButton {
+      background: var(--text-100);
     }
   }
 

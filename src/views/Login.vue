@@ -1,10 +1,11 @@
 <script lang="ts" setup>
-import { computed, ref, Ref } from "vue";
+import { computed, ref, Ref, onMounted } from "vue";
 import { useCSSMotion } from "../composables/motions";
+import { useFirebaseEmailLogin, firebaseLogout } from "../composables/firebase";
 import StyledButton from "@/components/StyledButton.vue";
 import TextInput from "@/components/TextInput.vue";
 import VueflixLogo from "@/components/VueflixLogo.vue";
-import { useFirebaseEmailLogin } from "../composables/firebase";
+import { useRouter } from "vue-router";
 
 const motion = useCSSMotion("1s", "cubic-bezier(0.85, 0, 0.15, 1)");
 
@@ -12,9 +13,13 @@ const id: Ref<string> = ref("");
 const pw: Ref<string> = ref("");
 const isIDBlank = computed<boolean>(() => id.value.length === 0);
 const isPWBlank = computed<boolean>(() => pw.value.length === 0);
+const router = useRouter();
 async function onLogin() {
-  const { isLoading, isFailed } = await useFirebaseEmailLogin(id, pw);
-  console.log(isLoading, isFailed);
+  const { isFailed } = await useFirebaseEmailLogin(id, pw);
+  if (isFailed.value) {
+    return;
+  }
+  router.push("/");
 }
 </script>
 
@@ -23,14 +28,14 @@ async function onLogin() {
     <header class="Login__Header">
       <h1 class="Logo">
         <VueflixLogo class="Logo__Img" />
-        <span class="Logo__Text">관리자</span>
+        <span class="Logo__Text">관리자 {{}}</span>
       </h1>
     </header>
     <form class="Login__Form" @submit.prevent="onLogin">
       <h2 class="Login__Title">로그인</h2>
       <div class="Input">
         <TextInput type="text" v-model:input-value="id">
-          <template #label>아이디</template>
+          <template #label>이메일</template>
         </TextInput>
         <TextInput type="password" v-model:input-value="pw">
           <template #label>패스워드</template>

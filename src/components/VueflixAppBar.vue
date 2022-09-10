@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 import { computed, ref, Ref } from "vue";
 import { storeToRefs } from "pinia";
-import HamburgerButton from "./HamburgerButton.vue";
-import SearchBar from "./SearchBar.vue";
-import VueflixNav from "./VueflixNav.vue";
 import { useNav } from "../store/nav";
 import { useEventListener } from "../composables/event";
 import { useCSSMotion } from "../composables/motions";
+import HamburgerButton from "./HamburgerButton.vue";
+import SearchBar from "./SearchBar.vue";
+import VueflixNav from "./VueflixNav.vue";
 
 const appBarProps = defineProps<{
   expanded: boolean;
