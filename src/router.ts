@@ -60,6 +60,20 @@ const routes = [
       requiresAuth: false,
     },
   },
+  {
+    path: "/404",
+    name: "존재하지 않는 페이지",
+    component: () => import("@/views/NotFound.vue"),
+    meta: {
+      title: "404 Not Found",
+      header: false,
+      reqiresAuth: false,
+    },
+  },
+  {
+    path: "/:pathMatch(.*)*",
+    redirect: "/404",
+  },
 ];
 
 export const router = createRouter({

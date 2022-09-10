@@ -16,7 +16,7 @@ const firebaseConfig = {
   measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 };
 
-initializeApp(firebaseConfig);
 const app = createApp(App);
 const pinia = createPinia();
+initializeApp(firebaseConfig);
 app.use(pinia).use(router).mount("#app");

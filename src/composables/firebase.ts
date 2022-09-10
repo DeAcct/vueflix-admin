@@ -24,15 +24,13 @@ import {
 import { ref, Ref, watchEffect } from "vue";
 import type { ImageFileName } from "../types/MediaExtension";
 
-const db = getFirestore();
-
 export function useFirestoreDocs<T>(
   collectionName: string,
   ...queryConstraints: QueryConstraint[]
 ) {
+  const db = getFirestore();
   const docs: Ref<Array<T>> = ref([]);
   const error: Ref<string> = ref("");
-
   const collectionRef = collection(db, collectionName);
 
   const q = queryConstraints
@@ -63,6 +61,7 @@ export function useFirestoreSingleDoc<T>(
   collectionName: string,
   docName: string
 ) {
+  const db = getFirestore();
   const singleDoc: Ref<T | undefined> = ref();
   const docRef = doc(db, collectionName, docName);
   const error: Ref<string> = ref("");
@@ -84,9 +83,8 @@ export function useFirestoreSingleDoc<T>(
   return { singleDoc, error };
 }
 
-const storage = getStorage();
-
 export function useStorageMedia(fileName: ImageFileName) {
+  const storage = getStorage();
   const imgURL: Ref<string> = ref("");
   const error: Ref<string> = ref("");
   const imgReference = storageRef(storage, fileName);
