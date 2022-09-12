@@ -6,20 +6,13 @@ import {
   onSnapshot,
   QueryConstraint,
   doc,
-  getDoc,
 } from "firebase/firestore";
 import {
   getStorage,
   ref as storageRef,
   getDownloadURL,
 } from "firebase/storage";
-import {
-  getAuth,
-  signInWithEmailAndPassword,
-  signOut,
-  User,
-  UserCredential,
-} from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword, signOut } from "firebase/auth";
 
 import { ref, Ref, watchEffect } from "vue";
 import type { ImageFileName } from "../types/MediaExtension";

@@ -45,11 +45,11 @@ const buttonClasses = useBEMClass(
     font-weight: 500;
   }
   &--ContainIcon {
-    width: 12rem;
     justify-content: space-between;
-    .StyledButton__Icon {
+    *:last-child {
       width: 1.8rem;
       height: 1.8rem;
+      margin-left: 3rem;
     }
   }
 }

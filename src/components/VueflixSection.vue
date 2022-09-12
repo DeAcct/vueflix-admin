@@ -51,7 +51,7 @@ const centered = useOptionClass(
     flex-direction: column;
     align-items: center;
     border-radius: var(--radius-3);
-    background-color: var(--bg-100);
+    background-color: var(--vueflix-section-bg);
     box-shadow: var(--box-shadow);
   }
 }

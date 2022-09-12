@@ -84,12 +84,14 @@ async function onLogout() {
 <template>
   <nav :class="vueflixNavClasses">
     <div class="row-top">
-      <h1 class="VueflixNav__Logo">
-        <RouterLink to="/">
-          <VueflixLogo />
-          <span :class="['AdminText', optionalBlind]">어드민</span>
-        </RouterLink>
-      </h1>
+      <div class="LogoArea">
+        <h1 class="VueflixNav__Logo">
+          <RouterLink to="/">
+            <VueflixLogo />
+            <span :class="['AdminText', optionalBlind]">어드민</span>
+          </RouterLink>
+        </h1>
+      </div>
       <h2 class="VueflixNav__Title inner">사이트 메뉴</h2>
       <ul class="VueflixNav__SiteMenu">
         <li
@@ -112,7 +114,7 @@ async function onLogout() {
           </button>
         </li>
       </ul>
-      <div class="VueflixNav__LogoutArea inner">
+      <div class="VueflixNav__LogoutArea">
         <StyledButton
           root="button"
           role="link"
@@ -207,10 +209,7 @@ async function onLogout() {
     }
   }
   &__LogoutArea {
-    padding: {
-      top: 1rem;
-      bottom: 1rem;
-    }
+    padding: 1rem var(--card-padding);
     .StyledButton {
       background: var(--text-100);
     }
@@ -245,6 +244,9 @@ async function onLogout() {
   .VueflixNav {
     width: v-bind(navWidth);
 
+    .LogoArea {
+      background-color: var(--text-100);
+    }
     &__Logo {
       display: block;
       margin: 0 auto;
@@ -271,7 +273,6 @@ async function onLogout() {
     }
 
     &__SiteMenu {
-      width: calc(100% - 0.5rem);
       .SiteLink {
         transition: v-bind("motion.duration") v-bind("motion.easing");
         height: 6.6rem;
@@ -283,6 +284,12 @@ async function onLogout() {
           margin-right: 0;
         }
       }
+    }
+
+    &__LogoutArea {
+      opacity: 0;
+      visibility: hidden;
+      transition: v-bind("motion.duration") v-bind("motion.easing");
     }
 
     .NewProjectButton {
@@ -300,6 +307,11 @@ async function onLogout() {
         transition: v-bind("motion.duration") v-bind("motion.easing");
       }
     }
+    &__SiteMenu {
+      .SiteLink {
+        width: 100%;
+      }
+    }
 
     &__ExpandButton {
       position: fixed;
@@ -309,7 +321,7 @@ async function onLogout() {
       align-items: center;
       justify-content: center;
       left: calc(v-bind(navWidth) - 2.4rem);
-      top: calc(50% - 2.4rem);
+      top: calc(50vh - 2.4rem);
       background-color: var(--bg-100);
       box-shadow: var(--box-shadow);
       border-radius: 50%;
@@ -330,8 +342,8 @@ async function onLogout() {
         }
       }
       .VueflixNav__SiteMenu {
-        width: calc(v-bind(navWidth) - var(--card-padding));
         .SiteLink {
+          width: calc(100% - var(--card-padding));
           padding: 0 var(--card-padding);
           button {
             align-items: center;
@@ -341,6 +353,10 @@ async function onLogout() {
             margin: 0;
           }
         }
+      }
+      .VueflixNav__LogoutArea {
+        visibility: visible;
+        opacity: 1;
       }
       .NewProjectButton {
         width: calc(v-bind(navWidth) - var(--card-padding) * 2);

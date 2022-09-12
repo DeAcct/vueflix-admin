@@ -41,6 +41,10 @@ const motion = useCSSMotion("1s", "cubic-bezier(0.85, 0, 0.15, 1)");
     align-items: center;
     animation: HeaderExpand v-bind("motion.duration") v-bind("motion.easing")
       forwards;
+    ::selection {
+      background-color: #fff;
+      color: var(--theme-500);
+    }
   }
   &__Form {
     flex-grow: 1;
@@ -52,14 +56,6 @@ const motion = useCSSMotion("1s", "cubic-bezier(0.85, 0, 0.15, 1)");
     flex-direction: column;
     justify-content: space-between;
     padding: var(--card-padding);
-    .Input {
-      margin-bottom: 2rem;
-    }
-    .TextInput {
-      &:not(:last-of-type) {
-        margin-bottom: 1rem;
-      }
-    }
   }
   &__Button {
     color: #fff;
@@ -77,7 +73,7 @@ const motion = useCSSMotion("1s", "cubic-bezier(0.85, 0, 0.15, 1)");
 }
 
 @media screen and (min-width: 1024px) {
-  .Login {
+  .Immersive {
     flex-direction: row;
     &__Title {
       margin-bottom: 2rem;

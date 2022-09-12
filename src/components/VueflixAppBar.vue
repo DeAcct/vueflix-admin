@@ -62,7 +62,7 @@ const motion = useCSSMotion("300ms", "cubic-bezier(0.85, 0, 0.15, 1)");
         </strong>
       </div>
     </div>
-    <SearchBar v-if="expanded" />
+    <SearchBar v-if="expanded || device === 'pc'" />
     <VueflixNav />
   </header>
 </template>
@@ -74,7 +74,13 @@ const motion = useCSSMotion("300ms", "cubic-bezier(0.85, 0, 0.15, 1)");
   height: 7.6rem;
   flex-direction: column;
   justify-content: center;
-  background: var(--header-bg);
+  background: radial-gradient(
+    farthest-corner at 0% 0%,
+    var(--theme-100),
+    var(--header-bg) 60%
+  );
+  background-repeat: no-repeat;
+  border-bottom: 1px solid var(--bg-300);
   backdrop-filter: blur(10px);
   transition: height v-bind("motion.duration") v-bind("motion.easing");
 
@@ -104,18 +110,14 @@ const motion = useCSSMotion("300ms", "cubic-bezier(0.85, 0, 0.15, 1)");
     height: 4.6rem;
   }
   &--Expanded {
-    backdrop-filter: unset;
+    border-bottom: none;
     height: var(--app-bar-height);
     padding: {
       top: 2rem;
       bottom: 2rem;
     }
     justify-content: space-between;
-    background: radial-gradient(
-      farthest-corner at 0% 0%,
-      var(--theme-100),
-      transparent 60%
-    );
+
     .row-top {
       height: 3.6rem;
     }
@@ -123,6 +125,7 @@ const motion = useCSSMotion("300ms", "cubic-bezier(0.85, 0, 0.15, 1)");
 
   .VueflixNav {
     position: fixed;
+    left: 0;
     z-index: var(--nav-z-index);
     left: -100%;
     top: 0;
@@ -133,16 +136,30 @@ const motion = useCSSMotion("300ms", "cubic-bezier(0.85, 0, 0.15, 1)");
 
 @media screen and (min-width: 1024px) {
   .VueflixAppBar {
-    transition: margin-left v-bind("motion.duration") v-bind("motion.easing"),
+    transition: padding-left v-bind("motion.duration") v-bind("motion.easing"),
       width v-bind("motion.duration") v-bind("motion.easing");
-    margin-left: v-bind(navWidth);
-    width: calc(100% - v-bind(navWidth));
+    padding-left: calc(var(--inner-padding) + v-bind(navWidth));
+    width: 100%;
     flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    height: 7.6rem;
+    padding: {
+      top: 0;
+      bottom: 0;
+    }
+    background: radial-gradient(
+      farthest-corner at 0% 0%,
+      var(--theme-100),
+      var(--header-bg) 70%
+    );
+
     &__ActivityName {
       margin: 0;
     }
     .SearchBar {
       width: 50rem;
+      box-shadow: none;
     }
     .VueflixNav {
       left: 0;
@@ -150,7 +167,7 @@ const motion = useCSSMotion("300ms", "cubic-bezier(0.85, 0, 0.15, 1)");
     }
     .row-top {
       margin-bottom: 0;
-      align-items: unset;
+      align-items: center;
       .col-left {
         height: 3.6rem;
       }

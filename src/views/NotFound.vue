@@ -1,15 +1,24 @@
 <script lang="ts" setup>
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import NotFoundAqua from "../assets/NotFoundAqua.a487baa1.svg";
 import StyledButton from "../components/StyledButton.vue";
 import { useAuth } from "../store/auth";
 import Immersive from "../layouts/Immersive.vue";
+import { onMounted, ref, Ref } from "vue";
+import CodeBlock from "../components/CodeBlock.vue";
 
 const auth = useAuth();
 const router = useRouter();
+const route = useRoute();
 function goBack() {
   router.back();
 }
+
+const redirectedFrom: Ref<undefined | string> = ref(undefined);
+onMounted(() => {
+  redirectedFrom.value = route.redirectedFrom?.path;
+  console.log(redirectedFrom.value);
+});
 </script>
 
 <template>
@@ -24,7 +33,10 @@ function goBack() {
           alt="길을 잃어 슬픈 코노스바 아쿠아"
           class="NotFoundImage"
         />
-        <h2 class="GuideText">찾을 수 없는 메뉴입니다.</h2>
+        <div class="col-right">
+          <h2 class="GuideText">찾을 수 없는 메뉴입니다.</h2>
+          <CodeBlock>"{{ redirectedFrom }}"</CodeBlock>
+        </div>
       </div>
       <div class="row-bottom">
         <StyledButton
@@ -60,6 +72,10 @@ function goBack() {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    .col-right {
+      display: flex;
+      flex-direction: column;
+    }
   }
   .NotFoundImage {
     width: 9.6rem;
@@ -68,6 +84,7 @@ function goBack() {
   }
   .GuideText {
     font-size: 2rem;
+    margin-bottom: 1rem;
   }
 
   .row-bottom {

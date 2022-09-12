@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;500;700;900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Nanum+Gothic+Coding&family=Noto+Sans+KR:wght@300;500;700;900&display=swap");
 html,
 body,
 header,
@@ -24,6 +24,7 @@ ul,
 li,
 ol,
 i,
+code,
 address,
 strong,
 form,
@@ -44,7 +45,7 @@ svg {
   padding: 0;
   border: none;
   color: var(--text-800);
-  font-family: "Noto Sans KR", sans-serif !important;
+  font-family: "Noto Sans KR", sans-serif;
   font-weight: 300;
   line-height: 1;
   letter-spacing: -0.03vw;
@@ -53,6 +54,9 @@ svg {
   box-sizing: border-box;
   word-break: keep-all;
   float: none;
+}
+code {
+  font-family: "Nanum Gothic Coding", sans-serif;
 }
 ::selection {
   background-color: var(--theme-500);
@@ -73,6 +77,8 @@ svg {
   --tag-overay-z-index: 25;
   --search-bar-body-z-index: 30;
   --nav-z-index: 35;
+  min-height: 100vh;
+  background-color: var(--bg-100);
 }
 #app .pointer-device {
   display: none;

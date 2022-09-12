@@ -144,13 +144,13 @@ const { docs: recommendLists } = useFirestoreDocs<RecommendListDoc>(
         display: flex;
         flex-direction: column;
         .AnimeListCard {
-          border-bottom: 1px solid var(--bg-200);
+          border-bottom: 1px solid var(--vueflix-section-line);
         }
       }
     }
 
     .ViewMoreBtn {
-      background-color: var(--bg-200);
+      background-color: var(--view-more-button);
       margin: 1.5rem 0;
       align-self: center;
     }

@@ -4,7 +4,6 @@ export function useLocalstorage<T>(
   key: string,
   initialState: T
 ): [Ref<T>, Function] {
-  console.log(initialState, localStorage.getItem(key) || "");
   const state: Ref<T> = ref(
     localStorage.getItem(key)
       ? JSON.parse(localStorage.getItem(key) || "")
@@ -20,4 +19,8 @@ export function useLocalstorage<T>(
   });
 
   return [state, setState];
+}
+
+export function getLocalstorage(key: string) {
+  return JSON.parse(localStorage.getItem(key) || "");
 }

@@ -57,22 +57,20 @@ const routes = [
     meta: {
       title: "로그인",
       header: false,
-      requiresAuth: false,
     },
   },
   {
-    path: "/404",
-    name: "존재하지 않는 페이지",
+    path: "/not-found",
+    name: "존재하지 않는 메뉴",
     component: () => import("@/views/NotFound.vue"),
     meta: {
-      title: "404 Not Found",
+      title: "슈뢰딩거의 메뉴",
       header: false,
-      reqiresAuth: false,
     },
   },
   {
     path: "/:pathMatch(.*)*",
-    redirect: "/404",
+    redirect: "/not-found",
   },
 ];
 

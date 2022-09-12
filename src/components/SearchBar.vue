@@ -205,6 +205,8 @@ const motion = useCSSMotion("150ms", "cubic-bezier(0.85, 0, 0.15, 1)");
   &__Placeholder {
     position: absolute;
     z-index: 25;
+    top: 50%;
+    transform: translateY(-50%);
     left: calc(var(--card-padding) + 3.4rem);
     font-size: 1.3rem;
     color: var(--bg-500);
@@ -217,6 +219,7 @@ const motion = useCSSMotion("150ms", "cubic-bezier(0.85, 0, 0.15, 1)");
 
   &__Input {
     width: calc(100% - 3.4rem);
+    background-color: var(--bg-100);
     font-weight: 500;
   }
   &__TagAddButton {

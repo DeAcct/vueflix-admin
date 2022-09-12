@@ -20,9 +20,7 @@ watch(
 
 const navStore = useNav();
 const { isNavOpen } = storeToRefs(navStore);
-const navWidth = computed<string>(() =>
-  isNavOpen.value ? "25rem" : "calc(3.6rem + var(--card-padding) * 2)"
-);
+const navWidth = computed<string>(() => (isNavOpen.value ? "25rem" : "7.6rem"));
 
 const isExpanded: Ref<boolean> = ref(false);
 const beforeScroll: Ref<number> = ref(Math.floor(window.scrollY));
@@ -73,6 +71,7 @@ console.clear();
 }
 .RouterView {
   padding: var(--app-bar-height) var(--inner-padding) 0;
+  background-color: var(--bg-100);
 }
 
 @media screen and (min-width: 1024px) {

@@ -52,6 +52,7 @@ const placeholderClasses = useBEMClass(
     height: 100%;
     font-size: 1.5rem;
     font-weight: 500;
+    background-color: var(--bg-100);
     &:focus {
       border: 2px solid var(--theme-500);
       & + .TextInput__Placeholder {

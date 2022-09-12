@@ -54,13 +54,6 @@ async function onLogin() {
 
 <style lang="scss" scoped>
 .Login {
-  display: flex;
-  flex-direction: column;
-  margin-left: 0;
-  width: 100%;
-  padding: 0;
-  background-color: var(--theme-500);
-  height: 100vh;
   &__Title {
     align-self: center;
     font-size: 2rem;
@@ -91,6 +84,12 @@ async function onLogin() {
 
   &__Button {
     color: #fff;
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .Login__Title {
+    margin-bottom: 2rem;
   }
 }
 </style>
