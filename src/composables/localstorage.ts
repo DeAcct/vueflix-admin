@@ -13,7 +13,7 @@ export function useLocalstorage<T>(
   function setState(value: T) {
     state.value = value;
   }
-
+  localStorage.setItem(key, JSON.stringify(state.value));
   watch(state, () => {
     localStorage.setItem(key, JSON.stringify(state.value));
   });
