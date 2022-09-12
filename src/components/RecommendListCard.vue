@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import type { CardElementRoot } from "../types/ElementRoot";
 import type { RecommendListDoc } from "../types/RecommendListDoc";
-import HorizontalList from "./HorizontalList.vue";
 import AnimePoster from "./AnimePoster.vue";
+import HorizontalList from "./HorizontalList.vue";
 
 defineProps<{
   root: CardElementRoot;

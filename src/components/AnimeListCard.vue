@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import HorizontalList from "./HorizontalList.vue";
-import AnimePoster from "./AnimePoster.vue";
 import type { ImageFileName } from "../types/MediaExtension";
 import type { CardElementRoot } from "../types/ElementRoot";
+import AnimePoster from "./AnimePoster.vue";
+import HorizontalList from "./HorizontalList.vue";
 
-const animeListCardProps = defineProps<{
+defineProps<{
   animeName: string;
   poster: ImageFileName;
   tags?: Array<string>;

@@ -1,11 +1,11 @@
 <script lang="ts" setup>
+import { onMounted, ref, Ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import NotFoundAqua from "../assets/NotFoundAqua.a487baa1.svg";
-import StyledButton from "../components/StyledButton.vue";
 import { useAuth } from "../store/auth";
 import Immersive from "../layouts/Immersive.vue";
-import { onMounted, ref, Ref } from "vue";
+import NotFoundAqua from "../assets/NotFoundAqua.a487baa1.svg";
 import CodeBlock from "../components/CodeBlock.vue";
+import StyledButton from "../components/StyledButton.vue";
 
 const auth = useAuth();
 const router = useRouter();

@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import { ImageFileName } from "../types/MediaExtension";
-import { useStorageMedia } from "../composables/firebase";
-import { Ref, ref } from "vue";
 import { CardElementRoot } from "../types/ElementRoot";
+import { ImageFileName } from "../types/MediaExtension";
 import { useBEMClass } from "../composables/classNames";
 import { useCSSMotion } from "../composables/motions";
+import { useStorageMedia } from "../composables/firebase";
+import { Ref, ref } from "vue";
 
 const animePosterProps = defineProps<{
   src: `${string}${ImageFileName}`;

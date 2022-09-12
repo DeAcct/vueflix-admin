@@ -1,4 +1,4 @@
-import { reactive, ref, computed, Ref, ComputedRef } from "vue";
+import { reactive, computed, Ref, ComputedRef } from "vue";
 import type { Block, BlockElement, BEM, OptionClass } from "../types/Classes";
 
 /** 제공한 조건에 따라 BEM형태의 배열을 반환합니다.

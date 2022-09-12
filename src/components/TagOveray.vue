@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import IconBase from "./IconBase.vue";
 import IconClose from "./icons/IconClose.vue";
-import { useCSSMotion } from "../composables/motions";
 import type { TagType } from "../types/SearchTagType";
+import { useCSSMotion } from "../composables/motions";
 
 defineProps<{
   splitTags: Record<TagType, Array<string>>;

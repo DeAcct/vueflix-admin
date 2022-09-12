@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { onAuthStateChanged, getAuth } from "@firebase/auth";
 import { useRouter } from "vue-router";
-import { getLocalstorage } from "../composables/localstorage";
 import { useAuth } from "../store/auth";
+import { getLocalstorage } from "../composables/localstorage";
 const auth = getAuth();
 const authStore = useAuth();
 onAuthStateChanged(auth, (user) => {
@@ -10,7 +10,7 @@ onAuthStateChanged(auth, (user) => {
 });
 
 const router = useRouter();
-router.beforeEach((to, from) => {
+router.beforeEach((to) => {
   const isLoggedIn = getLocalstorage("auth");
   if (isLoggedIn) {
     return;
@@ -19,17 +19,6 @@ router.beforeEach((to, from) => {
     router.replace("/login");
   }
 });
-
-// onMounted(() => {
-//   console.log(authStore.user, route.meta.requiresAuth);
-//   if (!authStore.user && route.meta) {
-//     router.replace("/login");
-//   }
-// });
-// router.beforeEach((to) => {
-//   const a = useAuth();
-//   console.log(a, to.meta);
-// });
 </script>
 
 <template>

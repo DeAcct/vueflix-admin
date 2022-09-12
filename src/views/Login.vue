@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import { computed, ref, Ref } from "vue";
+import { useRouter } from "vue-router";
 import { useFirebaseEmailLogin } from "../composables/firebase";
+import Immersive from "../layouts/Immersive.vue";
 import StyledButton from "@/components/StyledButton.vue";
 import TextInput from "@/components/TextInput.vue";
 import VueflixLogo from "@/components/VueflixLogo.vue";
-import { useRouter } from "vue-router";
-import Immersive from "../layouts/Immersive.vue";
 
 const id: Ref<string> = ref("");
 const pw: Ref<string> = ref("");

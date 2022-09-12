@@ -4,16 +4,16 @@ import {
   useFirestoreDocs,
   useFirestoreSingleDoc,
 } from "../composables/firebase";
+import type { AnimeDoc } from "../types/AnimeDoc";
+import type { Statistic } from "../types/Statistics";
+import type { RecommendListDoc } from "../types/RecommendListDoc";
 import { useOverflow } from "../utility/number";
-import VueflixSection from "@/components/VueflixSection.vue";
 import AnimeListCard from "@/components/AnimeListCard.vue";
 import IconBase from "@/components/IconBase.vue";
 import IconArrowNext from "@/components/icons/IconArrowNext.vue";
 import RecommendListCard from "@/components/RecommendListCard.vue";
-import type { AnimeDoc } from "../types/AnimeDoc";
-import type { Statistic } from "../types/Statistics";
-import type { RecommendListDoc } from "../types/RecommendListDoc";
 import StyledButton from "../components/StyledButton.vue";
+import VueflixSection from "@/components/VueflixSection.vue";
 
 const { docs: animes } = useFirestoreDocs<AnimeDoc>(
   "anime",

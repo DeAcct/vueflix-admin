@@ -2,9 +2,9 @@ import { createApp } from "vue";
 import { createPinia } from "pinia";
 import { router } from "./router";
 import { initializeApp } from "firebase/app";
+import App from "./App.vue";
 import "./color.scss";
 import "./common.scss";
-import App from "./App.vue";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,

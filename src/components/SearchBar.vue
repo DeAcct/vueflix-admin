@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 import { Ref, ref, computed, reactive, watch } from "vue";
 import { useRouter } from "vue-router";
-import IconBase from "./IconBase.vue";
-import IconSearch from "./icons/IconSearch.vue";
+import type { TagType } from "../types/SearchTagType";
 import { useBEMClass } from "../composables/classNames";
 import { useCSSMotion } from "../composables/motions";
+import IconBase from "./IconBase.vue";
+import IconSearch from "./icons/IconSearch.vue";
 import TagOveray from "./TagOveray.vue";
-import type { TagType } from "../types/SearchTagType";
 
 const rawTag: Ref<string> = ref("");
 const router = useRouter();

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, Ref, ref } from "vue";
+import { computed } from "vue";
 import { useBEMClass } from "../composables/classNames";
 import { useCSSMotion } from "../composables/motions";
 

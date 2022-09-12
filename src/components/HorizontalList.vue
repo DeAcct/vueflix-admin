@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { ref, Ref, computed, onMounted, toRef } from "vue";
-import { useEventListener } from "../composables/event";
 import type { ListElementRoot } from "../types/ElementRoot";
 import { useBEMClass } from "../composables/classNames";
+import { useEventListener } from "../composables/event";
 
 interface HorizontalListProps {
   rootType: ListElementRoot;
