@@ -12,7 +12,6 @@ onAuthStateChanged(auth, (user) => {
 const router = useRouter();
 router.beforeEach((to, from) => {
   const isLoggedIn = getLocalstorage("auth");
-  console.log(to, from, isLoggedIn);
   if (isLoggedIn) {
     return;
   }
