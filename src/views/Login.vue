@@ -1,24 +1,36 @@
 <script lang="ts" setup>
-import { computed, ref, Ref } from "vue";
+import { computed, onBeforeMount, ref, Ref } from "vue";
 import { useRouter } from "vue-router";
 import { useFirebaseEmailLogin } from "../composables/firebase";
 import Immersive from "../layouts/Immersive.vue";
 import StyledButton from "@/components/StyledButton.vue";
 import TextInput from "@/components/TextInput.vue";
 import VueflixLogo from "@/components/VueflixLogo.vue";
+import { getLocalstorage } from "../composables/localstorage";
+import { User } from "@firebase/auth";
 
 const id: Ref<string> = ref("");
 const pw: Ref<string> = ref("");
 const isIDBlank = computed<boolean>(() => id.value.length === 0);
 const isPWBlank = computed<boolean>(() => pw.value.length === 0);
 const router = useRouter();
+const errorCode: Ref<string> = ref("");
 async function onLogin() {
-  const { isFailed } = await useFirebaseEmailLogin(id, pw);
-  if (isFailed.value) {
+  errorCode.value = (await useFirebaseEmailLogin(id, pw)).value;
+  if (errorCode.value) {
     return;
   }
   router.push("/");
 }
+
+onBeforeMount(() => {
+  //로컬스토리지가 사용자에 의해 오염되었을 때를 대비.
+  //예) auth에 임의로 true가 입력되었을 때
+  const isLoggedIn = getLocalstorage("auth") as User;
+  if (isLoggedIn?.uid) {
+    router.back();
+  }
+});
 </script>
 
 <template>
@@ -38,16 +50,19 @@ async function onLogin() {
         <TextInput type="password" v-model:input-value="pw">
           <template #label>패스워드</template>
         </TextInput>
+        <span v-if="errorCode">{{ errorCode }}</span>
       </div>
-      <StyledButton
-        root="button"
-        type="submit"
-        :icon="false"
-        :disabled="isIDBlank || isPWBlank"
-        class="Login__Button"
-      >
-        <template #Text>로그인</template>
-      </StyledButton>
+      <div class="btn-area">
+        <StyledButton
+          root="button"
+          type="submit"
+          :icon="false"
+          :disabled="isIDBlank || isPWBlank"
+          class="Login__Button"
+        >
+          <template #Text>로그인</template>
+        </StyledButton>
+      </div>
     </template>
   </Immersive>
 </template>

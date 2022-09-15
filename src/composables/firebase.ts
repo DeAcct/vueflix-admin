@@ -16,6 +16,7 @@ import { getAuth, signInWithEmailAndPassword, signOut } from "firebase/auth";
 
 import { ref, Ref, watchEffect } from "vue";
 import type { ImageFileName } from "../types/MediaExtension";
+import { FirebaseError } from "@firebase/util";
 
 export function useFirestoreDocs<T>(
   collectionName: string,
@@ -95,15 +96,31 @@ export function useStorageMedia(fileName: ImageFileName) {
 
 export async function useFirebaseEmailLogin(id: Ref<string>, pw: Ref<string>) {
   const auth = getAuth();
-  const isFailed: Ref<boolean> = ref(false);
+  const errorCode: Ref<string> = ref("");
   try {
     await signInWithEmailAndPassword(auth, id.value, pw.value);
-  } catch {
-    isFailed.value = true;
+  } catch (error: unknown) {
+    if (error instanceof FirebaseError) {
+      console.log(error.code);
+      switch (error.code) {
+        case "auth/invalid-email":
+          errorCode.value = "잘못된 이메일 형식입니다.";
+          break;
+        case "auth/user-not-found":
+          errorCode.value = "등록되지 않은 이메일입니다.";
+          break;
+        case "auth/wrong-password":
+          errorCode.value = "잘못된 비밀번호입니다.";
+          break;
+        case "auth/too-many-requests":
+          errorCode.value = "비밀번호를 잊어버렸다면 재설정할 수 있습니다.";
+          break;
+        default:
+          errorCode.value = "오류가 발생했습니다. 다시 시도해 주세요";
+      }
+    }
   }
-  return {
-    isFailed,
-  };
+  return errorCode;
 }
 
 export async function firebaseLogout() {
