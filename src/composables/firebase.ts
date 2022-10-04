@@ -12,11 +12,18 @@ import {
   ref as storageRef,
   getDownloadURL,
 } from "firebase/storage";
-import { getAuth, signInWithEmailAndPassword, signOut } from "firebase/auth";
+import {
+  getAuth,
+  sendPasswordResetEmail,
+  signInWithEmailAndPassword,
+  signOut,
+} from "firebase/auth";
 
 import { ref, Ref, watchEffect } from "vue";
 import type { ImageFileName } from "../types/MediaExtension";
 import { FirebaseError } from "@firebase/util";
+import { useToast } from "../store/toast";
+import { storeToRefs } from "pinia";
 
 export function useFirestoreDocs<T>(
   collectionName: string,
@@ -110,10 +117,10 @@ export async function useFirebaseEmailLogin(id: Ref<string>, pw: Ref<string>) {
           errorCode.value = "등록되지 않은 이메일입니다.";
           break;
         case "auth/wrong-password":
-          errorCode.value = "잘못된 비밀번호입니다.";
+          errorCode.value = "잘못된 패스워드입니다.";
           break;
         case "auth/too-many-requests":
-          errorCode.value = "비밀번호를 잊어버렸다면 재설정할 수 있습니다.";
+          errorCode.value = "패스워드를 잊어버렸다면 재설정할 수 있습니다.";
           break;
         default:
           errorCode.value = "오류가 발생했습니다. 다시 시도해 주세요";
@@ -131,7 +138,26 @@ export async function firebaseLogout() {
   } catch {
     isFailed.value = true;
   }
-  return {
-    isFailed,
-  };
+  return isFailed;
+}
+
+export async function sendResetEmail(email: Ref<string>) {
+  const auth = getAuth();
+  const isFailed: Ref<boolean> = ref(false);
+  const toastStore = useToast();
+  try {
+    await sendPasswordResetEmail(auth, email.value);
+    toastStore.bakeBread(
+      "success",
+      `${email.value}에 비밀번호 리셋용 이메일을 보냈습니다.`,
+      3000
+    );
+  } catch {
+    toastStore.bakeBread(
+      "error",
+      "에러가 발생했습니다. 입력한 이메일을 다시 확인해 보세요",
+      3000
+    );
+  }
+  return isFailed;
 }

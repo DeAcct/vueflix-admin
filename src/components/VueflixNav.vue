@@ -7,6 +7,7 @@ import { firebaseLogout } from "../composables/firebase";
 import { useBEMClass, useOptionClass } from "../composables/classNames";
 import { useCSSMotion } from "../composables/motions";
 import { useEventListener } from "../composables/event";
+import { useViewportUnit } from "../composables/viewport";
 import IconArrowNext from "./icons/IconArrowNext.vue";
 import IconAnime from "./icons/IconAnime.vue";
 import IconBase from "./IconBase.vue";
@@ -44,7 +45,6 @@ const router = useRouter();
 const currentAddress: Ref<RouteRecordName> = ref("");
 onMounted(() => {
   currentAddress.value = route.name ? route.name : "";
-  setViewHeight();
 });
 watch(
   () => route.name,
@@ -59,11 +59,7 @@ function routeTo(address: string) {
   navStore.closeNav();
 }
 
-const viewHeight: Ref<string> = ref("");
-function setViewHeight() {
-  viewHeight.value = `${window.innerHeight}px`;
-}
-useEventListener(window, "resize", setViewHeight);
+const vh = useViewportUnit("100vh");
 
 const navStore = useNav();
 const { isNavOpen, navWidth } = storeToRefs(navStore);
@@ -155,7 +151,7 @@ async function onLogout() {
 .VueflixNav {
   background-color: var(--text-200);
   width: 100vw;
-  height: v-bind(viewHeight);
+  height: v-bind(vh);
   display: flex;
   flex-direction: column;
   justify-content: space-between;

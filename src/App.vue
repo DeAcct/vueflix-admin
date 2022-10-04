@@ -7,6 +7,7 @@ import AuthProvider from "@/components/AuthProvider.vue";
 import { useNav } from "./store/nav";
 import { useEventListener } from "./composables/event";
 import { useCSSMotion } from "./composables/motions";
+import ToastStack from "./components/ToastStack.vue";
 
 const route = useRoute();
 watch(
@@ -50,6 +51,7 @@ console.clear();
         <component :is="Component" :key="route.name"></component>
       </Transition>
     </RouterView>
+    <ToastStack />
   </AuthProvider>
 </template>
 
@@ -72,6 +74,11 @@ console.clear();
 .RouterView {
   padding: var(--app-bar-height) var(--inner-padding) 0;
   background-color: var(--bg-100);
+}
+.ToastStack {
+  position: fixed;
+  bottom: var(--card-padding);
+  right: var(--card-padding);
 }
 
 @media screen and (min-width: 1024px) {

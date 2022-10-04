@@ -1,11 +1,14 @@
 <script lang="ts" setup>
 import { useCSSMotion } from "../composables/motions";
+import { useViewportUnit } from "../composables/viewport";
 defineProps<{
   bodyRoot: string;
   eventCallback?: () => void;
 }>();
 
 const motion = useCSSMotion("1s", "cubic-bezier(0.85, 0, 0.15, 1)");
+
+const vh = useViewportUnit("100vh");
 </script>
 
 <template>
@@ -31,7 +34,7 @@ const motion = useCSSMotion("1s", "cubic-bezier(0.85, 0, 0.15, 1)");
   width: 100%;
   padding: 0;
   background-color: var(--theme-500);
-  height: 100vh;
+  height: v-bind(vh);
 
   &__Header {
     width: 100%;

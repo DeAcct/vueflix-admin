@@ -1,22 +1,25 @@
 <script lang="ts" setup>
 import { computed, onBeforeMount, ref, Ref } from "vue";
 import { useRouter } from "vue-router";
-import { useFirebaseEmailLogin } from "../composables/firebase";
+import { sendResetEmail, useFirebaseEmailLogin } from "../composables/firebase";
 import Immersive from "../layouts/Immersive.vue";
 import StyledButton from "@/components/StyledButton.vue";
 import TextInput from "@/components/TextInput.vue";
 import VueflixLogo from "@/components/VueflixLogo.vue";
 import { getLocalstorage } from "../composables/localstorage";
 import { User } from "@firebase/auth";
+import { useOptionClass } from "../composables/classNames";
 
-const id: Ref<string> = ref("");
+const email: Ref<string> = ref("");
 const pw: Ref<string> = ref("");
-const isIDBlank = computed<boolean>(() => id.value.length === 0);
+const isEmailBlank = computed<boolean>(() => email.value.length === 0);
+const isEmailValid = computed<boolean>(() => email.value.indexOf("@") !== -1);
 const isPWBlank = computed<boolean>(() => pw.value.length === 0);
 const router = useRouter();
-const errorCode: Ref<string> = ref("");
+const errorCode: Ref<unknown> = ref("");
+const isError = computed<boolean>(() => !!errorCode.value);
 async function onLogin() {
-  errorCode.value = (await useFirebaseEmailLogin(id, pw)).value;
+  errorCode.value = (await useFirebaseEmailLogin(email, pw)).value;
   if (errorCode.value) {
     return;
   }
@@ -31,6 +34,12 @@ onBeforeMount(() => {
     router.back();
   }
 });
+
+async function resetPW() {
+  await sendResetEmail(email);
+}
+
+const errorCodeClasses = useOptionClass("show", isError);
 </script>
 
 <template>
@@ -44,20 +53,32 @@ onBeforeMount(() => {
     <template #Body>
       <h2 class="Login__Title">로그인</h2>
       <div class="Input">
-        <TextInput type="text" v-model:input-value="id">
+        <TextInput type="text" v-model:input-value="email">
           <template #label>이메일</template>
         </TextInput>
         <TextInput type="password" v-model:input-value="pw">
           <template #label>패스워드</template>
         </TextInput>
-        <span v-if="errorCode">{{ errorCode }}</span>
+        <span :class="['Login__ErrorCode', errorCodeClasses]">
+          {{ errorCode }}
+        </span>
       </div>
       <div class="btn-area">
         <StyledButton
           root="button"
+          type="button"
+          :icon="false"
+          :disabled="isEmailBlank || !isEmailValid"
+          class="Login__Button Login__Button--ResetPassword"
+          @click="resetPW"
+        >
+          <template #Text>패스워드 초기화</template>
+        </StyledButton>
+        <StyledButton
+          root="button"
           type="submit"
           :icon="false"
-          :disabled="isIDBlank || isPWBlank"
+          :disabled="isEmailBlank || isPWBlank"
           class="Login__Button"
         >
           <template #Text>로그인</template>
@@ -97,8 +118,31 @@ onBeforeMount(() => {
     }
   }
 
+  &__ErrorCode {
+    display: flex;
+    align-items: center;
+    height: 2rem;
+    font-size: 1.2rem;
+    padding: 0 var(--card-padding);
+  }
+
+  .btn-area {
+    display: flex;
+    justify-content: flex-end;
+  }
   &__Button {
     color: #fff;
+    &:disabled {
+      background-color: var(--theme-300);
+    }
+    &--ResetPassword {
+      background-color: transparent;
+      color: inherit;
+      &:disabled {
+        background-color: transparent;
+        color: var(--text-100);
+      }
+    }
   }
 }
 
